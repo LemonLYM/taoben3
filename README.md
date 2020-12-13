@@ -42,3 +42,123 @@ msg|string|审核不通过信息, 如果没有消息为空字符串
              "msg": ""
          }
      }
+     
+### 获取用户信息
+请求方式:`get` 路由: `/api/user`
+
+#### 请求参数
+缺省
+
+#### 返回参数
+
+| 参数名 | 类型 | 描述 |
+| --- | --- | ---
+| uid| int|
+| wechat_user_id| int| 微信用户id
+| account| string| 账号
+| sex| int|性别
+| nickname| string|昵称
+| avatar| string|头像
+| phone| string|手机
+| now_money| float(10,2)|当前余额
+| user_type| string| 用户类型
+| promoter_time| timestamp|成功推广时间
+| is_promoter| int|是否为推广员
+| main_uid| int |主账号
+| pay_count| float(10,2) |用户购买次数
+| pay_price| float(10,2) |用户消费金额
+| spread_count| int|下级人数
+| service| int|
+| total_consume| int|
+| total_collect_product| int|
+| total_collect_store| int|
+| total_coupon| int|
+| total_visit_product| int|
+| total_unread| int|
+| total_recharge| int|
+| mer_ca| int|商户认证
+| user_ca| int|用户认证
+        
+        
+    {
+        "status": 200,
+        "message": "success",
+        "data": {
+            "uid": 3,
+            "wechat_user_id": 0,
+            "account": "18126392048",
+            "sex": 0,
+            "nickname": "111",
+            "avatar": "/pages/user/index",
+            "phone": null,
+            "now_money": "0.00",
+            "user_type": "",
+            "promoter_time": null,
+            "is_promoter": 0,
+            "main_uid": 0,
+            "pay_count": 0,
+            "pay_price": "0.00",
+            "spread_count": 0,
+            "user_ca": 0,
+            "mer_ca": 0,
+            "service": null,
+            "total_consume": 0,
+            "total_collect_product": 0,
+            "total_collect_store": 0,
+            "total_coupon": 0,
+            "total_visit_product": 0,
+            "total_unread": 0,
+            "total_recharge": 0
+        }
+    }
+    
+### 用户认证审核
+请求方式:`post` 路由: `/admin/user/ca`
+
+#### 请求参数
+ 参数名 | 是否必须 | 类型 | 描述 | 长度
+--- | --- | --- | --- | --- 
+uid|是|int|用户id|
+action|是|int |动作|
+msg|否| string |认证消息|
+
+#### 返回值
+缺省
+
+
+### 上传商户认证信息
+请求方式:`post` 路由: `/admin/user/ca`
+
+#### 请求参数
+ 参数名 | 是否必须 | 类型 | 描述 | 长度
+--- | --- | --- | --- | --- 
+idCardImages|是|array|身份证图片|
+merCaImage|是|string |商户证书|
+#### 返回参数
+缺省
+
+
+### 获取商户认证信息
+请求方式:`post` 路由: `/admin/user/ca`
+
+#### 请求参数
+缺省
+
+#### 返回参数
+ 参数名 | 是否必须 | 类型 | 描述 | 长度
+--- | --- | --- | --- | --- 
+idCardImages|是|array|身份证图片|
+merCaImage|是|string |商户证书|
+
+### 用户认证审核
+请求方式:`post` 路由: `/admin/mer/ca`
+
+#### 请求参数
+ 参数名 | 是否必须 | 类型 | 描述 | 长度
+--- | --- | --- | --- | --- 
+uid|是|int|用户id|
+action|是|int |动作|
+msg|否| string |认证消息|
+
+#### 返回值
+缺省

@@ -23,8 +23,10 @@ Route::group('api/', function () {
         Route::post('logout', 'api.Auth/logout');
         //用户信息
         Route::post('user/edit', 'api.Auth/userEdit');
-        Route::get('user/ca', 'api.Auth/userCa');
+        Route::get('user/ca', 'api.Auth/userCa');//获取用户认证
         Route::get('user', 'api.Auth/userInfo');
+        Route::post('mer/ca', 'api.Auth/userCa');//提交商户认证
+        Route::get('mer/ca', 'api.Auth/userCa');//获取商户认证
 
         //优惠券
         Route::group('coupon', function () {
