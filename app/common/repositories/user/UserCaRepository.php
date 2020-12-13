@@ -74,7 +74,7 @@ class UserCaRepository extends BaseRepository
         if(count($images) < 2)
             return false;
         $where = [
-            'type' => USER_CA,
+            'type' => self::USER_CA,
             'uid' => $uid,
         ];
         $data = ["msg" => ""];
@@ -90,7 +90,7 @@ class UserCaRepository extends BaseRepository
         if(count($images) < 3)
             return false;
         $where = [
-            'type' => USER_CA,
+            'type' => self::MER_CA,
             'uid' => $uid,
         ];
         $data = ["msg" => ""];
