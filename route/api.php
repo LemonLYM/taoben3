@@ -22,6 +22,7 @@ Route::group('api/', function () {
         //退出登录
         Route::post('logout', 'api.Auth/logout');
         //用户信息
+        Route::post('user/edit', 'api.Auth/userEdit');
         Route::get('user', 'api.Auth/userInfo');
 
         //优惠券

@@ -8,9 +8,9 @@
 
 参数名|是否必须|类型|描述|长度
 -|:-:|:-:|:-:|-:
-avatar|是|string|头像
-idCardImages|是|数组|身份
-nickName|是|string|昵称
+avatar|是|string|头像|
+idCardImages|是|数组|身份|
+nickName|是|string|昵称|
 
 #### 返回值
 

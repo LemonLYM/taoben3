@@ -82,6 +82,12 @@ class Auth extends BaseController
         return app('json')->success($user->toArray());
     }
 
+    public function userEdit(UserRepository $repository)
+    {
+        $uid = $this->request->uid();
+        return app('json')->success($uid);
+    }
+
     /**
      * @param UserRepository $repository
      * @return mixed
