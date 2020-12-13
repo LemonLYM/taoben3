@@ -1,31 +1,19 @@
-# crmeb 多商户版
+## 接口文档
 
-## 开发环境
+### 上传图片接口
 
-- mac 10.15
-- php 7.2.22
-- mysql 5.7.27
-- swoole 4.4.8
-- redis 5.0.5
+`post` 
 
-## 项目依赖
+`/api/user/edit`
 
-- thinkphp
-- think-swoole
-- overtrue/wechat
-- xaboy/form-builder
+#### 请求参数
 
-## 运行
 
-开启
-```sh
-php think swoole
-```
-重启
-```sh
-php think swoole restart
-```
-关闭
-```sh
-php think swoole stop
-```
+ 参数名 | 是否必须 | 类型 | 描述 | 长度 
+-:|:-:|:-:|:-:|:-:|:-
+avatar|是|string|头像
+idCardImages|是|数组|身份
+nickName|是|string|昵称
+
+
+### 获取用户信息接口
