@@ -11,6 +11,7 @@
 namespace app\controller\api;
 
 
+use app\common\repositories\user\UserCaRepository;
 use app\common\repositories\user\UserRepository;
 use app\common\repositories\wechat\RoutineQrcodeRepository;
 use app\common\repositories\wechat\WechatUserRepository;
@@ -82,9 +83,14 @@ class Auth extends BaseController
         return app('json')->success($user->toArray());
     }
 
-    public function userEdit(UserRepository $repository)
+    public function userEdit(UserRepository $repository, UserCaRepository $userCa)
     {
         $uid = $this->request->uid();
+        $avatar = $this->request->param('avatar');
+        $nickName = $this->request->param('nickName');
+        $idCardImages = $this->request->param('idCardImages');
+        $repository->updateUserInfo($uid, ["avatar" => $avatar, 'nickName' => $nickName]);
+        $userCa->userSave($uid, $idCardImages);
         return app('json')->success($uid);
     }
 

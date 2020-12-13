@@ -917,4 +917,9 @@ class UserRepository extends BaseRepository
             ]);
         });
     }
+
+    public function updateUserInfo($uid, $data)
+    {
+        return $this->dao->save(['uid'=> $uid], $data);
+    }
 }
