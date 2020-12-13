@@ -95,7 +95,7 @@ class UserCaRepository extends BaseRepository
         ];
         $data = ["msg" => ""];
         foreach ($images as $i => $img){
-            $data["img$i"] = $img;
+            $data["img". $i+1 ] = $img;
         }
         $this->dao->save($where, $data);
         return true;
