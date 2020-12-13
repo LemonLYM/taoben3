@@ -32,6 +32,7 @@ class UserCaDao extends BaseDao
     public function save($where, $data): bool
     {
         $db = ($this->getModel()::getDB());
+        dump($where);die();
         $user = $db->where($where)->find();
         if($user){
             $db->where($where)->update($data);
