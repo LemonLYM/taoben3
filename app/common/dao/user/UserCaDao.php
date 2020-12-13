@@ -13,6 +13,7 @@ namespace app\common\dao\user;
 
 use app\common\dao\BaseDao;
 use app\common\model\user\UserAddress as model;
+use app\common\model\user\UserCa;
 
 class UserCaDao extends BaseDao
 {
