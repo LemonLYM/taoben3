@@ -24,7 +24,7 @@ class UserCaDao extends BaseDao
      */
     protected function getModel(): string
     {
-        return model::class;
+        return UserCa::class;
     }
 
 
