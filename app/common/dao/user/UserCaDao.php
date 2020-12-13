@@ -36,6 +36,7 @@ class UserCaDao extends BaseDao
         if($user){
             $db->where($where)->update($data);
         }else{
+            dump(array_merge($where,$data));die();
             $db->insert(array_merge($where,$data));
         }
         return true;
