@@ -41,4 +41,9 @@ class UserCaDao extends BaseDao
         return true;
     }
 
+    public function getInfo($where)
+    {
+        return ($this->getModel()::getDB())->where($where)->find();
+    }
+
 }

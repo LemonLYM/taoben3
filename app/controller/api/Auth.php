@@ -91,7 +91,13 @@ class Auth extends BaseController
         $idCardImages = $this->request->param('idCardImages');
         $repository->updateUserInfo($uid, ["avatar" => $avatar, 'nickname' => $nickName]);
         $userCa->userSave($uid, $idCardImages);
-        return app('json')->success($uid);
+        return app('json')->success("success");
+    }
+
+    public function userCa(UserCaRepository $userCa){
+        $uid = $this->request->uid();
+        list($idCardImages, $msg) = $userCa->getUserCa($uid);
+        return app('json')->success("success", ["idCardImages" => $idCardImages, "msg" => $msg]);
     }
 
     /**
