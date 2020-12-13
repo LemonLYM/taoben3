@@ -46,7 +46,7 @@ class MerchantIntentionRepository extends BaseRepository
         $form = Elm::createForm(Route::buildUrl('systemMerchantIntentionStatus', ['id' => $id])->build());
         $form->setRule([
             Elm::input("image", "图片", "http://apis.taoben888.cn/uploads/def/20201204/bcbc0d8a0841d7c024b2d3e901403aa6.gif
-", "image")->disabled(true),
+", "image")->disabled(true)->prop("type", "image"),
             Elm::select('status', '审核状态', 1)->options([
                 ['value' => 1, 'label' => '同意'],
                 ['value' => 2, 'label' => '拒绝'],
