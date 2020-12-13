@@ -113,7 +113,7 @@ msg|string|审核不通过信息, 如果没有消息为空字符串
     }
     
 ### 用户认证审核
-请求方式:`post` 路由: `/admin/user/ca`
+请求方式:`post` 路由: `sys/user/intention/ca/{uid}`
 
 #### 请求参数
  参数名 | 是否必须 | 类型 | 描述 | 长度
@@ -151,7 +151,7 @@ idCardImages|是|array|身份证图片|
 merCaImage|是|string |商户证书|
 
 ### 用户认证审核
-请求方式:`post` 路由: `/admin/mer/ca`
+请求方式:`post` 路由: `/sys/merchant/intention/status/{uid}`
 
 #### 请求参数
  参数名 | 是否必须 | 类型 | 描述 | 长度
