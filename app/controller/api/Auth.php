@@ -89,7 +89,7 @@ class Auth extends BaseController
         $avatar = $this->request->param('avatar');
         $nickName = $this->request->param('nickName');
         $idCardImages = $this->request->param('idCardImages');
-        $repository->updateUserInfo($uid, ["avatar" => $avatar, 'nickName' => $nickName]);
+        $repository->updateUserInfo($uid, ["avatar" => $avatar, 'nickname' => $nickName]);
         $userCa->userSave($uid, $idCardImages);
         return app('json')->success($uid);
     }
