@@ -41,35 +41,26 @@ class MerchantIntentionRepository extends BaseRepository
         return $form->setTitle('修改备注');
     }
 
-    public function statusForm($id)
+    public function statusForm($id, $item = [])
     {
+//        [
+//            "type" => "img",
+//            "title" => "身份证正面",
+//            "props" => [
+//                "placeholder" => "请输入图片",
+//                "src" => "http:\/\/apis.taoben888.cn\/uploads\/def\/20201204\/bcbc0d8a0841d7c024b2d3e901403aa6.gif",
+//                "disabled" => true
+//            ],
+//            "disabled" => true
+//        ]
         $form = Elm::createForm(Route::buildUrl('systemMerchantIntentionStatus', ['id' => $id])->build());
-        $form->setRule([
-            [
-                "type" => "img",
-                "title" => "身份证正面",
-                "props" => [
-                    "placeholder" => "请输入图片",
-                    "src" => "http:\/\/apis.taoben888.cn\/uploads\/def\/20201204\/bcbc0d8a0841d7c024b2d3e901403aa6.gif",
-                    "disabled" => true
-                ],
-                "disabled" => true
-            ],
-            [
-                "type" => "img",
-                "title" => "身份证背面",
-                "props" => [
-                    "placeholder" => "请输入图片",
-                    "src" => "http:\/\/apis.taoben888.cn\/uploads\/def\/20201204\/bcbc0d8a0841d7c024b2d3e901403aa6.gif",
-                    "disabled" => true
-                ],
-                "disabled" => true
-            ],
+        $rule = array_merge($item, [
             Elm::select('status', '审核状态', 1)->options([
                 ['value' => 1, 'label' => '同意'],
                 ['value' => 2, 'label' => '拒绝'],
             ]),
         ]);
+        $form->setRule();
         return $form->setTitle('修改审核状态');
     }
 }

@@ -12,6 +12,7 @@ namespace app\controller\admin\system\merchant;
 
 use app\common\repositories\system\CacheRepository;
 use app\common\repositories\user\UserCaRepository;
+use app\common\repositories\user\UserMerRepository;
 use think\App;
 use crmeb\basic\BaseController;
 use app\common\repositories\system\merchant\MerchantIntentionRepository;
@@ -19,17 +20,22 @@ use app\common\repositories\system\merchant\MerchantIntentionRepository;
 class MerchantIntention extends BaseController
 {
     protected $repository;
+    protected $caRepository;
+    protected $userMerRepository;
 
     /**
      * MerchantIntention constructor.
      * @param App $app
      * @param MerchantIntentionRepository $repository
+     * @param UserCaRepository $ca
+     * @param UserMerRepository $userMer
      */
-    public function __construct(App $app, MerchantIntentionRepository $repository, UserCaRepository $ca)
+    public function __construct(App $app, MerchantIntentionRepository $repository, UserCaRepository $ca, UserMerRepository $userMer)
     {
         parent::__construct($app);
         $this->repository = $repository;
         $this->caRepository = $ca;
+        $this->userMerRepository = $userMer;
     }
 
     public function lst()
@@ -50,8 +56,12 @@ class MerchantIntention extends BaseController
     {
         if (!$this->repository->getWhereCount(['mer_intention_id' => $id, 'is_del' => 0]))
             return app('json')->fail('数据不存在');
-//        $userid = $this->
-        return app('json')->success(formToData($this->repository->statusForm($id)));
+        $uid = $this->userMerRepository->getUseridByMerid($id);
+        $item = [];
+        if($uid){
+            $ca = $this->caRepository->getUserCa($uid);
+        }
+        return app('json')->success(formToData($this->repository->statusForm($id, $item)));
     }
 
     public function mark($id)
