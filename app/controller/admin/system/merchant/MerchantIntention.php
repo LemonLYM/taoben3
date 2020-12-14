@@ -11,6 +11,7 @@
 namespace app\controller\admin\system\merchant;
 
 use app\common\repositories\system\CacheRepository;
+use app\common\repositories\user\UserCaRepository;
 use think\App;
 use crmeb\basic\BaseController;
 use app\common\repositories\system\merchant\MerchantIntentionRepository;
@@ -24,10 +25,11 @@ class MerchantIntention extends BaseController
      * @param App $app
      * @param MerchantIntentionRepository $repository
      */
-    public function __construct(App $app, MerchantIntentionRepository $repository)
+    public function __construct(App $app, MerchantIntentionRepository $repository, UserCaRepository $ca)
     {
         parent::__construct($app);
         $this->repository = $repository;
+        $this->caRepository = $ca;
     }
 
     public function lst()
@@ -48,6 +50,7 @@ class MerchantIntention extends BaseController
     {
         if (!$this->repository->getWhereCount(['mer_intention_id' => $id, 'is_del' => 0]))
             return app('json')->fail('数据不存在');
+//        $userid = $this->
         return app('json')->success(formToData($this->repository->statusForm($id)));
     }
 

@@ -47,7 +47,17 @@ class MerchantIntentionRepository extends BaseRepository
         $form->setRule([
             [
                 "type" => "img",
-                "title" => "图片",
+                "title" => "身份证正面",
+                "props" => [
+                    "placeholder" => "请输入图片",
+                    "src" => "http:\/\/apis.taoben888.cn\/uploads\/def\/20201204\/bcbc0d8a0841d7c024b2d3e901403aa6.gif",
+                    "disabled" => true
+                ],
+                "disabled" => true
+            ],
+            [
+                "type" => "img",
+                "title" => "身份证背面",
                 "props" => [
                     "placeholder" => "请输入图片",
                     "src" => "http:\/\/apis.taoben888.cn\/uploads\/def\/20201204\/bcbc0d8a0841d7c024b2d3e901403aa6.gif",
