@@ -85,6 +85,7 @@ class MerchantIntention extends BaseController
             return app('json')->fail('数据不存在');
         $status = $this->request->param('status', 0) == 1 ? 1 : 2;
         $this->repository->update($id, ['status' => $status]);
+        //TODO 开启店铺. 创建密码
         return app('json')->success('修改成功');
     }
 
