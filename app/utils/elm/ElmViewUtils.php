@@ -28,6 +28,6 @@ class ElmViewUtils
     }
 
     public function build(){
-        return (array)$this;
+        return json_decode(json_encode($this),true);
     }
 }
