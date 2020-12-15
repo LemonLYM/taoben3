@@ -22,7 +22,7 @@ class ElmViewUtils
     }
 
 
-    public function disabled(boole $f){
+    public function disabled($f){
         $this->disabled = $f;
         return $this;
     }
