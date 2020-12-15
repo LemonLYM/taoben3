@@ -6,8 +6,8 @@ namespace app\utils\elm;
 
 class ElmViewUtils
 {
-    private $type;
-    private $props;
+    public $type;
+    public $props;
 
     public function __construct()
     {
