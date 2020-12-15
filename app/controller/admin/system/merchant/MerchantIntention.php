@@ -60,7 +60,7 @@ class MerchantIntention extends BaseController
         $uid = $this->userMerRepository->getUseridByMerid($id);
         $item = [];
         if($uid){
-            $ca = $this->caRepository->getUserCa($uid);
+            $ca = $this->caRepository->getMerCa($uid);
             if($ca){
                 $item[] =(new ElmViewUtils())->image("身份证正面", $ca->img1)->disabled(false)->build();
                 $item[] =(new ElmViewUtils())->image("身份证反面面", $ca->img2)->disabled(false)->build();
