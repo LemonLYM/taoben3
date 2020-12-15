@@ -110,7 +110,7 @@ class UserCaRepository extends BaseRepository
 
     public function getMerCa($uid)
     {
-        $where = ["uid" =>$uid, 'type' => self::USER_CA];
+        $where = ["uid" =>$uid, 'type' => self::MER_CA];
         $caInfo = $this->dao->getInfo($where);
 
         return $caInfo;
