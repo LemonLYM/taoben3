@@ -150,7 +150,7 @@ merCaImage|是|string |商户证书|
 idCardImages|是|array|身份证图片|
 merCaImage|是|string |商户证书|
 
-### 用户认证审核
+### 商户认证审核
 请求方式:`post` 路由: `/sys/merchant/intention/status/{uid}`
 
 #### 请求参数

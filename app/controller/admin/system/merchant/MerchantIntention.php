@@ -13,6 +13,7 @@ namespace app\controller\admin\system\merchant;
 use app\common\repositories\system\CacheRepository;
 use app\common\repositories\user\UserCaRepository;
 use app\common\repositories\user\UserMerRepository;
+use app\utils\elm\ElmViewUtils;
 use think\App;
 use crmeb\basic\BaseController;
 use app\common\repositories\system\merchant\MerchantIntentionRepository;
@@ -60,6 +61,11 @@ class MerchantIntention extends BaseController
         $item = [];
         if($uid){
             $ca = $this->caRepository->getUserCa($uid);
+            if($ca){
+                $item[] =(new ElmViewUtils())->image("身份证正面", $ca->img1)->disabled(false)->build();
+                $item[] =(new ElmViewUtils())->image("身份证反面面", $ca->img2)->disabled(false)->build();
+                $item[] =(new ElmViewUtils())->image("营业执照", $ca->img3)->disabled(false)->build();
+            }
         }
         return app('json')->success(formToData($this->repository->statusForm($id, $item)));
     }

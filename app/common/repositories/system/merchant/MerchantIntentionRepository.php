@@ -43,18 +43,9 @@ class MerchantIntentionRepository extends BaseRepository
 
     public function statusForm($id, $item = [])
     {
-//        [
-//            "type" => "img",
-//            "title" => "身份证正面",
-//            "props" => [
-//                "placeholder" => "请输入图片",
-//                "src" => "http:\/\/apis.taoben888.cn\/uploads\/def\/20201204\/bcbc0d8a0841d7c024b2d3e901403aa6.gif",
-//                "disabled" => true
-//            ],
-//            "disabled" => true
-//        ]
         $form = Elm::createForm(Route::buildUrl('systemMerchantIntentionStatus', ['id' => $id])->build());
         $rule = array_merge($item, [
+            Elm::input("msg","提示", "", "text"),
             Elm::select('status', '审核状态', 1)->options([
                 ['value' => 1, 'label' => '同意'],
                 ['value' => 2, 'label' => '拒绝'],
