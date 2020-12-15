@@ -8,6 +8,7 @@ class ElmViewUtils
 {
     public $type;
     public $props;
+    public $title;
 
     public function __construct()
     {
@@ -17,6 +18,7 @@ class ElmViewUtils
     public function image(string $title, string $src)
     {
         $this->type = "img";
+        $this->title = $title;
         $this->props["src"] = $src;
         return $this;
     }
