@@ -51,7 +51,7 @@ class MerchantIntentionRepository extends BaseRepository
                 ['value' => 2, 'label' => '拒绝'],
             ]),
         ]);
-        $form->setRule();
+        $form->setRule($rule);
         return $form->setTitle('修改审核状态');
     }
 }
