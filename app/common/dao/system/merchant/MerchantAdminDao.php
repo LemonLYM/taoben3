@@ -206,4 +206,9 @@ class MerchantAdminDao extends BaseDao
     {
         return MerchantAdmin::getDB()->where('mer_id', $merId)->where('is_del', 0)->where('level', 0)->value('merchant_admin_id');
     }
+
+
+    public function getByMerId($mer_id){
+        return MerchantAdmin::getDB()->where('mer_id', $mer_id)->where('is_del', 0)->find();
+    }
 }

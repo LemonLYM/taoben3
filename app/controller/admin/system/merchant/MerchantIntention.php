@@ -13,6 +13,7 @@ namespace app\controller\admin\system\merchant;
 use app\common\repositories\system\CacheRepository;
 use app\common\repositories\user\UserCaRepository;
 use app\common\repositories\user\UserMerRepository;
+use app\common\repositories\user\UserRepository;
 use app\utils\elm\ElmViewUtils;
 use think\App;
 use crmeb\basic\BaseController;
@@ -85,7 +86,12 @@ class MerchantIntention extends BaseController
             return app('json')->fail('数据不存在');
         $status = $this->request->param('status', 0) == 1 ? 1 : 2;
         $this->repository->update($id, ['status' => $status]);
-        //TODO 开启店铺. 创建密码
+        if($status == 1){
+            $uid = $this->userMerRepository->getUseridByMerid($id);
+            app("UserRepository")->updateUserInfo($uid, ["mer_ca"=> 1]);
+            $this->userMerRepository->save(["uid"=>$uid, "mer_id"=>$id], ["status" => 1]);
+            // TODO 设置商户密码?
+        }
         return app('json')->success('修改成功');
     }
 

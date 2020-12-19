@@ -12,6 +12,7 @@ namespace app\common\middleware;
 
 use app\common\repositories\system\merchant\MerchantAdminRepository;
 use app\common\repositories\system\merchant\MerchantRepository;
+use app\common\repositories\user\UserRepository;
 use app\Request;
 use crmeb\exceptions\AuthException;
 use crmeb\services\JwtTokenService;
@@ -44,19 +45,33 @@ class MerchantTokenMiddleware extends BaseMiddleware
              * @var MerchantAdminRepository $repository
              */
             $repository = app()->make(MerchantAdminRepository::class);
+            $userRepository = app()->make(UserRepository::class);
             $service = new JwtTokenService();
             try {
                 $payload = $service->parseToken($token);
             } catch (ExpiredException $e) {
+                try{
                 $repository->checkToken($token);
+                }catch (Throwable $e){
+                    $userRepository->checkToken($token);
+                }
                 $payload = $service->decode($token);
             } catch (Throwable $e) {//Token 过期
                 throw new AuthException('token 已过期');
             }
-            if ('mer' != $payload->jti[1])
-                throw new AuthException('无效的 token');
 
-            $admin = $repository->get($payload->jti[0]);
+
+
+            if ('user' == $payload->jti[1]){
+                $user = $repository->get($payload->jti[0]);
+                $mer_id = app('UserMerRepository')->getUseridByMerid($user->uid);
+                $admin = $repository->getByMerId($mer_id);
+            }else if ('mer' == $payload->jti[1]){
+                $admin = $repository->get($payload->jti[0]);
+            }else{
+                throw new AuthException('无效的 token');
+            }
+
             if (!$admin)
                 throw new AuthException('账号不存在');
             if (!$admin['status'])

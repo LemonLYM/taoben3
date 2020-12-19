@@ -76,4 +76,8 @@ class UserMerRepository extends BaseRepository
         return $uid?$uid->uid: null;
     }
 
+    public function save($where, $data)
+    {
+        return $this->dao->where($where)->update($data);
+    }
 }
