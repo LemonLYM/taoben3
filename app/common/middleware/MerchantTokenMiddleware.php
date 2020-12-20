@@ -65,14 +65,12 @@ class MerchantTokenMiddleware extends BaseMiddleware
 
             if ('user' == $payload->jti[1]){
                 $mer_id = app()->make(UserMerRepository::class)->getMeridByUserid($payload->jti[0]);
-                dump($mer_id);
                 $admin = $repository->getByMerId($mer_id);
             }else if ('mer' == $payload->jti[1]){
                 $admin = $repository->get($payload->jti[0]);
             }else{
                 throw new AuthException('无效的 token');
             }
-            dump($admin);die();
             if (!$admin)
                 throw new AuthException('账号不存在');
             if (!$admin['status'])
