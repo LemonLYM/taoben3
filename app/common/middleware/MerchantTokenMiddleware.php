@@ -64,7 +64,7 @@ class MerchantTokenMiddleware extends BaseMiddleware
 
 
             if ('user' == $payload->jti[1]){
-                $mer_id = app()->make(UserMerRepository::class)->getUseridByMerid($payload->jti[0]);
+                $mer_id = app()->make(UserMerRepository::class)->getMeridByUserid($payload->jti[0]);
                 dump($mer_id);
                 $admin = $repository->getByMerId($mer_id);
             }else if ('mer' == $payload->jti[1]){
