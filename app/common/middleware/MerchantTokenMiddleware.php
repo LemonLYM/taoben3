@@ -12,6 +12,7 @@ namespace app\common\middleware;
 
 use app\common\repositories\system\merchant\MerchantAdminRepository;
 use app\common\repositories\system\merchant\MerchantRepository;
+use app\common\repositories\user\UserMerRepository;
 use app\common\repositories\user\UserRepository;
 use app\Request;
 use crmeb\exceptions\AuthException;
@@ -64,7 +65,7 @@ class MerchantTokenMiddleware extends BaseMiddleware
 
             if ('user' == $payload->jti[1]){
                 $user = $repository->get($payload->jti[0]);
-                $mer_id = app('UserMerRepository')->getUseridByMerid($user->uid);
+                $mer_id = app()->make(UserMerRepository::class)->getUseridByMerid($user->uid);
                 $admin = $repository->getByMerId($mer_id);
             }else if ('mer' == $payload->jti[1]){
                 $admin = $repository->get($payload->jti[0]);
