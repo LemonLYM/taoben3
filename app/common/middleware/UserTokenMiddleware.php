@@ -40,11 +40,11 @@ class UserTokenMiddleware extends BaseMiddleware
 
             /**
              * @var UserRepository $repository
+             * @var JwtTokenService $service
              */
             $repository = app()->make(UserRepository::class);
             $service = new JwtTokenService();
             try {
-                dump(333);die();
                 $payload = $service->parseToken($token);
             } catch (ExpiredException $e) {
                 $repository->checkToken($token);
