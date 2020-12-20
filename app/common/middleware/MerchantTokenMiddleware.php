@@ -49,6 +49,7 @@ class MerchantTokenMiddleware extends BaseMiddleware
             $userRepository = app()->make(UserRepository::class);
             $service = new JwtTokenService();
             try {
+                dump($token);die();
                 $payload = $service->parseToken($token);
                 dump($payload);die();
             } catch (ExpiredException $e) {
