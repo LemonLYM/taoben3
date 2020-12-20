@@ -50,6 +50,7 @@ class MerchantTokenMiddleware extends BaseMiddleware
             $service = new JwtTokenService();
             try {
                 $payload = $service->parseToken($token);
+                dump($payload);die();
             } catch (ExpiredException $e) {
                 try{
                     $repository->checkToken($token);
