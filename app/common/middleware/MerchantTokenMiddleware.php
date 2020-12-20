@@ -43,6 +43,7 @@ class MerchantTokenMiddleware extends BaseMiddleware
 
             /**
              * @var MerchantAdminRepository $repository
+             * @var UserRepository $userRepository
              */
             $repository = app()->make(MerchantAdminRepository::class);
             $userRepository = app()->make(UserRepository::class);
@@ -53,7 +54,6 @@ class MerchantTokenMiddleware extends BaseMiddleware
                 try{
                     $repository->checkToken($token);
                 }catch (AuthException $e){
-                    dump(11);die();
                     $userRepository->checkToken($token);
                 }
                 $payload = $service->decode($token);
