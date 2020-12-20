@@ -185,6 +185,7 @@ class ProductRepository extends BaseRepository
             $result = $this->dao->create($product);
             $settleParams = $this->setAttrValue($data, $result->product_id, $productType, 0);
             $settleParams['cate'] = $this->setMerCate($data['mer_cate_id'], $result->product_id, $data['mer_id']);
+            dump($settleParams['cate']);die();
             $settleParams['attr'] = $this->setAttr($data, $result->product_id);
             $this->save($result->product_id, $settleParams, $data['content']);
             if ($productType == 1) { //秒杀商品
