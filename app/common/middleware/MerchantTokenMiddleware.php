@@ -72,6 +72,7 @@ class MerchantTokenMiddleware extends BaseMiddleware
             }else{
                 throw new AuthException('无效的 token');
             }
+            dump($admin);die();
             if (!$admin)
                 throw new AuthException('账号不存在');
             if (!$admin['status'])
