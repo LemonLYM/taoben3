@@ -72,7 +72,9 @@ class UserMerRepository extends BaseRepository
 
     public function getUseridByMerid($merid)
     {
+        dump($merid);
         $uid = $this->dao->getWhere(["mer_id"=>$merid], "uid");
+        dump($uid);
         return $uid?$uid->uid: null;
     }
 
