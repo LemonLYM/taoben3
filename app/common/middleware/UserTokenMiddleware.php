@@ -45,6 +45,7 @@ class UserTokenMiddleware extends BaseMiddleware
             $service = new JwtTokenService();
             try {
                 $payload = $service->parseToken($token);
+                dump(333);die();
             } catch (ExpiredException $e) {
                 $repository->checkToken($token);
                 $payload = $service->decode($token);
