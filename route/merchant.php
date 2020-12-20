@@ -169,6 +169,7 @@ Route::group(config('admin.api_merchant_prefix') . '/', function () {
             Route::get('lst', '/lst')->name('merchantStoreProductLst');
             Route::get('list', '/lst');
             Route::post('create', '/create')->name('merchantStoreProductCreate');
+            Route::post('createByUser', '/createByUser')->name('merchantStoreProductCreateByUser');
             Route::get('detail/:id', '/detail')->name('merchantStoreProductDetail');
             Route::post('update/:id', '/update')->name('merchantStoreProductUpdate');
             Route::delete('delete/:id', '/delete')->name('merchantStoreProductDelete');

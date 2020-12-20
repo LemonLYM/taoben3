@@ -76,6 +76,23 @@ class Product extends BaseController
     /**
      * @Author:Qinii
      * @Date: 2020/5/18
+     * @param validate $validate
+     * @return mixed
+     */
+    public function createByUser(validate $validate)
+    {
+        $merchant = $this->request->merchant();
+        $data = $this->checkParams($validate);
+        $data['mer_id'] = $this->request->merId();
+        $data['status'] = $this->request->merchant()->is_audit ? 0 : 1;
+        $data['mer_status'] = ($merchant['is_del'] || !$merchant['mer_state'] || !$merchant['status']) ? 0 : 1;
+        $this->repository->createByUser($data,0);
+        return app('json')->success('添加成功');
+    }
+
+    /**
+     * @Author:Qinii
+     * @Date: 2020/5/18
      * @param $id
      * @param validate $validate
      * @return mixed
