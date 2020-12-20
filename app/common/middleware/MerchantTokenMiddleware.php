@@ -52,7 +52,7 @@ class MerchantTokenMiddleware extends BaseMiddleware
             } catch (ExpiredException $e) {
                 try{
                 $repository->checkToken($token);
-                }catch (Throwable $e){
+                }catch (AuthException $e){
                     $userRepository->checkToken($token);
                 }
                 $payload = $service->decode($token);
