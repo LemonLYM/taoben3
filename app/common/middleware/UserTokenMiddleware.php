@@ -47,6 +47,7 @@ class UserTokenMiddleware extends BaseMiddleware
             try {
                 $payload = $service->parseToken($token);
             } catch (ExpiredException $e) {
+                dump(1);die();
                 $repository->checkToken($token);
                 $payload = $service->decode($token);
             } catch (Throwable $e) {//Token 过期

@@ -387,7 +387,6 @@ class UserRepository extends BaseRepository
     {
         $has = Cache::has('user_' . $token);
         dump($token);die();
-        Cache::get();
         if (!$has)
             throw new AuthException('无效的token');
         $lastTime = Cache::get('user_' . $token);
