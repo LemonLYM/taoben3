@@ -183,8 +183,8 @@ class ProductRepository extends BaseRepository
         return Db::transaction(function () use ($data, $productType) {
             $product = $this->setProduct($data);
             $result = $this->dao->create($product);
-            dump($result);die();
             $settleParams = $this->setAttrValue($data, $result->product_id, $productType, 0);
+            dump($settleParams);die();
             $settleParams['cate'] = $this->setMerCate($data['mer_cate_id'], $result->product_id, $data['mer_id']);
             dump($settleParams['cate']);die();
             $settleParams['attr'] = $this->setAttr($data, $result->product_id);
