@@ -181,6 +181,7 @@ class ProductRepository extends BaseRepository
     public function createByUser(array $data, int $productType = 0)
     {
         return Db::transaction(function () use ($data, $productType) {
+            dump($data);die();
             $product = $this->setProduct($data);
             $result = $this->dao->create($product);
             $settleParams = $this->setAttrValue($data, $result->product_id, $productType, 0);
