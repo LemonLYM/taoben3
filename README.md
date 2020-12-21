@@ -162,3 +162,46 @@ msg|否| string |认证消息|
 
 #### 返回值
 缺省
+
+
+### 上传商品
+请求方式:`post` 路由: `/mer/store/product/createByUser`
+
+#### 请求参数 
+
+ 参数名 | 是否必须 | 类型 | 描述 | 长度
+--- | --- | --- | --- | --- 
+image|是|string|小图|
+slider_image|是|array |轮播图|
+store_name|是| string |商品名称|
+store_info|是| string |商品描述|
+keyword|是| string |关键字|
+cate_id|是| string |平台分类|
+mer_cate_id|是| array |商品类别|
+sort|是| int |排序|数值范围 1~10000
+temp_id|否| int |运费模板id| 后续会给一个通用模板给用户选择.
+price|是| string |价格|
+attr|否|array|
+content|是|string|富文本, 商品内容
+
+```
+{
+	"image": "http://apis.taoben888.cn/uploads/def/20201203/78954f5fa6447e474707d342a3f406de.png",
+	"slider_image": ["http://apis.taoben888.cn/uploads/def/20201203/78954f5fa6447e474707d342a3f406de.png"],
+	"store_name": "1",
+	"store_info": "1",
+	"keyword": "1",
+	"cate_id": 244,
+	"mer_cate_id": [301],
+	"sort": 0,
+	"temp_id": 106,
+	"price": "1",
+	"attr": [],
+	"content": "<p>1</p>",
+}
+```
+
+#### 返回值
+```
+{"status":200,"message":"添加成功"}
+```

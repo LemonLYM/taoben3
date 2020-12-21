@@ -183,11 +183,9 @@ class ProductRepository extends BaseRepository
         return Db::transaction(function () use ($data, $productType) {
             $product = $this->setProduct($data);
             $result = $this->dao->create($product);
-            $settleParams = $this->setAttrValue($data, $result->product_id, $productType, 0);
-            dump($settleParams);die();
+            $settleParams = $this->setAttrValueByUser($data, $result->product_id, $productType, 0);
             $settleParams['cate'] = $this->setMerCate($data['mer_cate_id'], $result->product_id, $data['mer_id']);
-            dump($settleParams['cate']);die();
-            $settleParams['attr'] = $this->setAttr($data, $result->product_id);
+            $settleParams['attr'] = $this->setAttr($data['attr'], $result->product_id);
             $this->save($result->product_id, $settleParams, $data['content']);
             if ($productType == 1) { //秒杀商品
                 $dat = $this->setSeckillProduct($data);
@@ -443,6 +441,61 @@ class ProductRepository extends BaseRepository
 
             $stock = $stock + intval($value['stock']);
         }
+        $result['data'] = ['price' => $pric, 'stock' => $stock, 'ot_price' => $ot_price, 'cost' => $cost];
+        return $result;
+    }
+
+
+    /**
+     *  格式商品SKU
+     * @Author:Qinii
+     * @Date: 2020/9/15
+     * @param array $data
+     * @param int $productId
+     * @return mixed
+     */
+    public function setAttrValueByUser(array $data, int $productId, int $productType, int $isUpdate = 0)
+    {
+        $extension_status = systemConfig('extension_status');
+        if ($isUpdate) {
+            $product = app()->make(ProductAttrValueRepository::class)->search(['product_id' => $productId])->select()->toArray();
+            $oldSku = $this->detailAttrValue($product, null);
+        }
+
+        $pric = $stock = $ot_price = $cost = 0;
+            $sku = '';
+            if (isset($data['detail']) && is_array($data['detail'])) {
+                $sku = implode(',', $data['detail']);
+            }
+            $unique = $this->setUnique($productId, $sku, $productType);
+            $result['attrValue'][] = [
+
+                'detail' => json_encode($data['detail'] ?? ''),
+                "bar_code" => $data["bar_code"] ?? '',
+                "image" => $data["image"],
+                "cost" => $data['cost'] ?? 0,
+                "price" => $data['price'] ?? 0,
+                "volume" => $data['volume'] ?? 0,
+                "weight" => $data['weight'] ?? 0,
+                "stock" => $data['stock'] ?? 0,
+                "ot_price" => $data['ot_price'] ?? 0,
+                "extension_one" => $extension_status ?? 0,
+                "extension_two" => $extension_status ?? 0,
+                "product_id" => $productId,
+                "type" => 0,
+                "sku" => $sku,
+                "unique" => $unique,
+                'sales' => $isUpdate ? ($oldSku[$sku]['sales'] ?? 0) : 0,
+            ];
+
+            if (!$pric) $pric = $data['price']??0;
+            if (!$ot_price) $ot_price = $data['ot_price']??0;
+            if (!$cost) $cost = $data['cost']??0;
+//            $ot_price = ($ot_price > $data['ot_price']) ? $data['ot_price'] : $ot_price;
+//            $pric = ($pric > $data['price']) ? $data['price'] : $pric;
+//            $cost = ($cost > $data['cost']) ? $data['cost'] : $cost;
+
+            $stock = $stock + intval($data['stock']??0);
         $result['data'] = ['price' => $pric, 'stock' => $stock, 'ot_price' => $ot_price, 'cost' => $cost];
         return $result;
     }
@@ -1106,14 +1159,10 @@ class ProductRepository extends BaseRepository
      */
     public function check($data, $merId)
     {
-        if (!$this->merBrandExists($data['brand_id']))
-            throw new ValidateException('品牌不存在');
         if (!$this->CatExists($data['cate_id']))
             throw new ValidateException('平台分类不存在');
         if (isset($data['mer_cate_id']) && !$this->merCatExists($data['mer_cate_id'], $merId))
             throw new ValidateException('不存在的商户分类');
-        if (!$this->merShippingExists($merId, $data['temp_id']))
-            throw new ValidateException('运费模板不存在');
 
     }
 
