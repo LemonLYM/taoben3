@@ -86,4 +86,5 @@ class UserMerRepository extends BaseRepository
     {
         return $this->dao->where($where)->update($data);
     }
+
 }

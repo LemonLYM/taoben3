@@ -177,7 +177,7 @@ class MerchantRepository extends BaseRepository
     {
         /** @var MerchantAdminRepository $make */
         $make = app()->make(MerchantAdminRepository::class);
-        Db::transaction(function () use ($data, $make) {
+        return Db::transaction(function () use ($data, $make) {
             $account = $data['mer_account'];
             $password = $data['mer_password'];
             unset($data['mer_account'], $data['mer_password']);
@@ -185,7 +185,9 @@ class MerchantRepository extends BaseRepository
             $make->createMerchantAccount($merchant, $account, $password);
             app()->make(ShippingTemplateRepository::class)->createDefault($merchant->mer_id);
             app()->make(ProductCopyRepository::class)->defaulCopyNum($merchant->mer_id);
+            return $merchant->mer-id;
         });
+
     }
 
 
