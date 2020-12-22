@@ -338,6 +338,7 @@ class ProductRepository extends BaseRepository
             'status' => $data['status'],
             'give_coupon_ids' => $give_coupon_ids,
             'mer_status' => $data['mer_status'],
+            'new_percentage' => $data['new_percentage'],
         ];
         if (isset($data['is_gift_bag'])) $result['is_gift_bag'] = $data['is_gift_bag'];
         if (isset($data['mer_id'])) $result['mer_id'] = $data['mer_id'];

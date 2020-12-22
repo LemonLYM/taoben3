@@ -178,11 +178,13 @@ store_info|是| string |商品描述|
 keyword|是| string |关键字|
 cate_id|是| string |平台分类|
 mer_cate_id|是| array |商品类别|
-sort|是| int |排序|数值范围 1~10000
+sort|否| int |排序|数值范围 1~10000
 temp_id|否| int |运费模板id| 后续会给一个通用模板给用户选择.
 price|是| string |价格|
+cost|是| string |原价价格|
 attr|否|array|
 content|是|string|富文本, 商品内容
+new_percentage|是|int|新旧程度|1-100, 100表示全新
 
 ```
 {
@@ -196,6 +198,7 @@ content|是|string|富文本, 商品内容
 	"sort": 0,
 	"temp_id": 106,
 	"price": "1",
+    "cost":"2",
 	"attr": [],
 	"content": "<p>1</p>",
 }

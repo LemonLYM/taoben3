@@ -179,7 +179,7 @@ class Product extends BaseController
         $params = [
             "image", "slider_image", "store_name", "store_info", "keyword", "bar_code", "brand_id",
             "cate_id", "mer_cate_id", "unit_name", "sort" , "is_show", "is_good",'is_gift_bag',
-            "video_link", "temp_id", "content", "spec_type","extension_type", "attr", "attrValue",['give_coupon_ids',[]], "price"
+            "video_link", "temp_id", "content", "spec_type","extension_type", "attr", "attrValue",['give_coupon_ids',[]], "price", "cost", "new_percentage"
         ];
         $data = $this->request->params($params);
         $validate->check($data);
