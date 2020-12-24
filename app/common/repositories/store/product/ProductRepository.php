@@ -187,11 +187,6 @@ class ProductRepository extends BaseRepository
             $settleParams['cate'] = $this->setMerCate($data['mer_cate_id'], $result->product_id, $data['mer_id']);
             $settleParams['attr'] = $this->setAttr($data['attr'], $result->product_id);
             $this->save($result->product_id, $settleParams, $data['content']);
-            if ($productType == 1) { //秒杀商品
-                $dat = $this->setSeckillProduct($data);
-                $dat['product_id'] = $result->product_id;
-                app()->make(StoreSeckillActiveRepository::class)->create($dat);
-            }
             return $result->product_id;
         });
     }
@@ -214,6 +209,24 @@ class ProductRepository extends BaseRepository
                 $dat = $this->setSeckillProduct($data);
                 app()->make(StoreSeckillActiveRepository::class)->updateByProduct($id, $dat);
             }
+        });
+    }
+
+    /**
+     * @Author:Qinii
+     * @Date: 2020/5/11
+     * @param int $id
+     * @param array $data
+     */
+    public function editByUser(int $id, array $data, int $merId, int $productType)
+    {
+        Db::transaction(function () use ($id, $data, $merId, $productType) {
+
+            $product = $this->setProduct($data);
+            $settleParams = $this->setAttrValue($data, $id, $productType, 1);
+            $settleParams['cate'] = $this->setMerCate($data['mer_cate_id'], $id, $merId);
+            $settleParams['attr'] = $this->setAttr($data['attr'], $id);
+            $this->save($id, $settleParams, $data['content'], $product);
         });
     }
 
@@ -339,6 +352,9 @@ class ProductRepository extends BaseRepository
             'give_coupon_ids' => $give_coupon_ids,
             'mer_status' => $data['mer_status'],
             'new_percentage' => $data['new_percentage'],
+            'province' => $data['province'],
+            'city' => $data['city'],
+            "postage" => $data['postage'],
         ];
         if (isset($data['is_gift_bag'])) $result['is_gift_bag'] = $data['is_gift_bag'];
         if (isset($data['mer_id'])) $result['mer_id'] = $data['mer_id'];
@@ -422,7 +438,7 @@ class ProductRepository extends BaseRepository
                 "price" => $value['price'] ? (($value['price'] < 0) ? 0 : $value['price']) : 0,
                 "volume" => $value['volume'] ? (($value['volume'] < 0) ? 0 : $value['volume']) : 0,
                 "weight" => $value['weight'] ? (($value['weight'] < 0) ? 0 : $value['weight']) : 0,
-                "stock" => $value['stock'] ? (($value['stock'] < 0) ? 0 : $value['stock']) : 0,
+                "stock" => $value['stock'] ? (($value['stock'] < 0) ? 0 : $value['stock']) : 1,
                 "ot_price" => $value['ot_price'] ? (($value['ot_price'] < 0) ? 0 : $value['ot_price']) : 0,
                 "extension_one" => $extension_status ? ($value['extension_one'] ?? 0) : 0,
                 "extension_two" => $extension_status ? ($value['extension_two'] ?? 0) : 0,

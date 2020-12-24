@@ -120,6 +120,31 @@ class Product extends BaseController
      * @Author:Qinii
      * @Date: 2020/5/18
      * @param $id
+     * @param validate $validate
+     * @return mixed
+     */
+    public function updateByUser($id,validate $validate)
+    {
+        $merchant = $this->request->merchant();
+        $data = $this->checkParams($validate);
+        if(!$this->repository->merExists($this->request->merId(),$id))
+            return app('json')->fail('数据不存在');
+        $pro = $this->repository->getWhere(['product_id' => $id]);
+        if($pro->status == -2){
+            $data['status'] = 0;
+        }else{
+            $data['status'] = $this->request->merchant()->is_audit ? 0 : 1;
+        }
+        $data['mer_status'] = ($merchant['is_del'] || !$merchant['mer_state'] || !$merchant['status']) ? 0 : 1;
+        unset($data['is_gift_bag']);
+        $this->repository->editByUser($id,$data,$this->request->merId(),0);
+        return app('json')->success('编辑成功');
+    }
+
+    /**
+     * @Author:Qinii
+     * @Date: 2020/5/18
+     * @param $id
      * @return mixed
      */
     public function delete($id)
@@ -179,7 +204,8 @@ class Product extends BaseController
         $params = [
             "image", "slider_image", "store_name", "store_info", "keyword", "bar_code", "brand_id",
             "cate_id", "mer_cate_id", "unit_name", "sort" , "is_show", "is_good",'is_gift_bag',
-            "video_link", "temp_id", "content", "spec_type","extension_type", "attr", "attrValue",['give_coupon_ids',[]], "price", "cost", "new_percentage"
+            "video_link", "temp_id", "content", "spec_type","extension_type", "attr", "attrValue",
+            ['give_coupon_ids',[]], "price", "cost", "new_percentage", "province", "city","postage",
         ];
         $data = $this->request->params($params);
         $validate->check($data);

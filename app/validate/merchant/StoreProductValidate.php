@@ -17,11 +17,9 @@ class StoreProductValidate extends Validate
         "image|主图" => 'require|max:128',
         "slider_image|轮播图" => 'require',
         "store_name|商品名称" => 'require|max:128',
-        "cate_id|平台分类" => 'require',
         "mer_cate_id|商户分类" => 'array',
-        "temp_id|运费模板" => 'require',
         "spec_type" => "in:0,1",
-        "is_show｜是否商家" => "in:0,1",
+        "is_show｜是否上架" => "in:0,1",
         "extension_type" => "in:0,1",
         "attr|商品规格" => "requireIf:spec_type,1|Array|checkUnique",
         "attrValue|商品属性" => "Array|productAttrValue"

@@ -176,16 +176,18 @@ slider_image|是|array |轮播图|
 store_name|是| string |商品名称|
 store_info|是| string |商品描述|
 keyword|是| string |关键字|
-cate_id|是| string |平台分类|
 mer_cate_id|是| array |商品类别|
-sort|否| int |排序|数值范围 1~10000
-temp_id|否| int |运费模板id| 后续会给一个通用模板给用户选择.
 price|是| string |价格|
 cost|是| string |原价价格|
 attr|否|array|
 content|是|string|富文本, 商品内容
 new_percentage|是|int|新旧程度|1-100, 100表示全新
+province|是|string|省份
+city|是|string|市
+stock|是|int|库存
+postage|是|int|邮费
 
+以表格为准, 例子可能不是最新的
 ```
 {
 	"image": "http://apis.taoben888.cn/uploads/def/20201203/78954f5fa6447e474707d342a3f406de.png",
@@ -208,3 +210,34 @@ new_percentage|是|int|新旧程度|1-100, 100表示全新
 ```
 {"status":200,"message":"添加成功"}
 ```
+
+
+### 修改商品属性
+请求方式: `post` 路由:  `/mer/store/product/updateByUser/{pro_id}`
+
+#### 请求参数
+
+同上传商品接口
+
+#### 返回值
+```
+{"status":200,"message":"添加成功"}
+```
+
+
+### 下架商品
+
+请求方式: `post` 路由:  `/mer/store/product/status/{pro_id}`
+
+#### 请求参数
+
+ 参数名 | 是否必须 | 类型 | 描述 | 长度
+--- | --- | --- | --- | --- 
+status|是|int | 0下架, 1上架|
+
+#### 返回值
+
+```
+{"status":200,"message":"修改成功"}
+```
+
