@@ -435,6 +435,7 @@ export default {
   methods: {
     // 修改用户申请的审核状态 通过或者不通过
     onchangeIsShow(id) {
+      //修改接口名字
       this.$modalForm(intentionStatusApi1(id)).then(() => this.getList());
     },
     // 选择国家
