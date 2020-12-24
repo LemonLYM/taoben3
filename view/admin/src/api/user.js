@@ -4,7 +4,7 @@ import request from './request'
 /**
  * @description 申请管理 -- 修改状态
  */
-export function intentionStatusApi1(mer_id) {
+export function intentionStatusApiNew(mer_id) {
   return request.get(`/sys/user/intention/status/${mer_id}/form`)
 
 }

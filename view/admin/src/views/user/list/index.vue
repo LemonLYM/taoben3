@@ -261,7 +261,7 @@ import {
   groupLstApi,
   labelLstApi,
   cityListApi,
-  intentionStatusApi1
+  intentionStatusApiNew
 } from '@/api/user';
 import newsCategory from '@/components/newsCategory/index.vue';
 import userDetails from './userDetails';
@@ -436,7 +436,7 @@ export default {
     // 修改用户申请的审核状态 通过或者不通过
     onchangeIsShow(id) {
       //修改接口名字
-      this.$modalForm(intentionStatusApi1(id)).then(() => this.getList());
+      this.$modalForm(intentionStatusApiNew(id)).then(() => this.getList());
     },
     // 选择国家
     changeCountry() {
