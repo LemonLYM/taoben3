@@ -165,7 +165,7 @@ msg|否| string |认证消息|
 
 
 ### 上传商品
-请求方式:`post` 路由: `/mer/store/product/createByUser`
+请求方式:`post` 路由: `/api/store/product/createByUser`
 
 #### 请求参数 
 
@@ -218,7 +218,7 @@ attr|否|array|
 
 
 ### 修改商品属性
-请求方式: `post` 路由:  `/mer/store/product/updateByUser/{pro_id}`
+请求方式: `post` 路由:  `/api/store/product/updateByUser/{pro_id}`
 
 #### 请求参数
 
@@ -232,7 +232,7 @@ attr|否|array|
 
 ### 下架商品
 
-请求方式: `post` 路由:  `/mer/store/product/status/{pro_id}`
+请求方式: `post` 路由:  `/api/store/product/status/{pro_id}`
 
 #### 请求参数
 
