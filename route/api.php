@@ -232,7 +232,7 @@ Route::group('api/', function () {
     })->middleware(UserTokenMiddleware::class, false);
 
     //商户接口
-    Route::group(function(){
+    Route::group('store/product', function(){
         Route::post('createByUser', 'merchant.store.product.Product/createByUser')->name('merchantStoreProductCreateByUser');
         Route::post('updateByUser/:id', 'merchant.store.product.Product/updateByUser')->name('merchantStoreProductUpdate');
         Route::post('status/:id', 'merchant.store.product.Product/switchStatus')->name('merchantStoreProductSwitchStatus');
