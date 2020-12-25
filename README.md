@@ -184,7 +184,6 @@ postage|是|int|邮费
 province|是|string|省份
 city|是|string|市
 mer_cate_id|是| array |商品类别|
-
 keyword|是| string |关键字|
 attr|否|array|
 
