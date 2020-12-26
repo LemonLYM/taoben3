@@ -78,6 +78,8 @@ class MerchantIntention extends BaseController
             "status"=>0,
         ];
         app()->make(UserMerRepository::class)->create($userMerData);
+        //待审核状态.
+        app()->make(UserRepository::class)->save(["uid"=>$data['uid'], ["mer_ca" =>0]]);
 
 
         $this->repository->create($data);

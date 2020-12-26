@@ -82,9 +82,5 @@ class UserMerRepository extends BaseRepository
         return $mer_id?$mer_id->mer_id: null;
     }
 
-    public function save($where, $data)
-    {
-        return $this->dao->where($where)->update($data);
-    }
 
 }

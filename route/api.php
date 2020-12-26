@@ -236,6 +236,7 @@ Route::group('api/', function () {
     Route::group('store/product', function(){
         Route::post('createByUser', 'merchant.store.product.Product/createByUser')->name('merchantStoreProductCreateByUser');
         Route::post('updateByUser/:id', 'merchant.store.product.Product/updateByUser')->name('merchantStoreProductUpdate');
+        Route::post('FromByUser/:id', 'merchant.store.product.Product/FromByUser')->name('merchantStoreProductUpdate');
         Route::post('status/:id', 'merchant.store.product.Product/switchStatus')->name('merchantStoreProductSwitchStatus');
     })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
 

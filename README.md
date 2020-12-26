@@ -245,4 +245,45 @@ status|是|int | 0下架, 1上架|
 ```
 {"status":200,"message":"修改成功"}
 ```
+### 下架商品
 
+请求方式: `post` 路由:  `/api/store/product/FromByUser/{pro_id}`
+
+#### 请求参数
+
+缺省
+
+#### 返回值
+```
+{
+    "status": 200,
+    "message": "success",
+    "data": {
+        "product_id": 338,
+        "image": "http://apis.taoben888.cn/uploads/def/20201226/956b8ce943aa0303305a60b462414b4a.png",
+        "slider_image": [
+            "http://apis.taoben888.cn/uploads/def/20201226/be0fb8ce1e125e2e4323a2ad1a417041.png"
+        ],
+        "store_name": "剧本名称",
+        "store_info": "",
+        "keyword": "",
+        "price": "12.00",
+        "cost": "12.00",
+        "stock": 0,
+        "new_percentage": 50,
+        "province": "13267",
+        "city": "13268",
+        "postage": 12,
+        "mer_cate_id": [
+            179,
+            180,
+            186
+        ],
+        "content": "12333",
+        "province_name": "广东省",
+        "city_name": "深圳市",
+        "attr": [],
+        "seckill_status": ""
+    }
+}
+```

@@ -46,4 +46,9 @@ class City extends BaseController
     {
         return app('json')->success($this->repository->getFormatList(['is_show' => 1]));
     }
+
+
+    public function getNameById(){
+        $redis ="";
+    }
 }

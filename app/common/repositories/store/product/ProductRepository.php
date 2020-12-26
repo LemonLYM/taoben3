@@ -575,6 +575,48 @@ class ProductRepository extends BaseRepository
     }
 
     /**
+     * admin 获取商品详情
+     * @Author:Qinii
+     * @Date: 2020/5/18
+     * @param $pid
+     * @return array
+     */
+    public function getByUser($pid)
+    {
+        $with = ['attr', 'content', 'merCateId'];
+
+        $field = ["product_id", "image", "slider_image", 'store_name', 'store_info',
+            'keyword', 'price', 'new_percentage', 'cost', 'province', 'city', 'stock',
+            'postage', "content", "attr","mer_cate_id", "province_name", "city_name"];
+        $data = $this->dao->getWhere(['product_id' => $pid], '*', $with)->append(['seckill_status']);
+        $where = [['coupon_id', 'in', $data['give_coupon_ids']]];
+        $data['coupon'] = app()->make(StoreCouponRepository::class)->selectWhere($where, 'coupon_id,title')->toArray();
+        $arr = [];
+        if (isset($data['merCateId'])) {
+            foreach ($data['merCateId'] as $i) {
+                $arr[] = $i['mer_cate_id'];
+            }
+        }
+        unset($data['merCateId']);
+        $data['mer_cate_id'] = $arr;
+        foreach ($data['attr'] as $k => $v) {
+            $data['attr'][$k] = [
+                'value' => $v['attr_name'],
+                'detail' => $v['attr_values']
+            ];
+        }
+        $content = $data['content']['content'];
+        unset($data['content']);
+        $data['content'] = $content;
+        $data['province_name'] = "广东省";
+        $data['city_name'] = "深圳市";
+
+        $data->visible($field);
+
+        return $data;
+    }
+
+    /**
      * @Author:Qinii
      * @Date: 2020/5/18
      * @param $type

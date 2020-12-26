@@ -115,10 +115,6 @@ class UserDao extends BaseDao
         return $query;
     }
 
-    public function save($where, $data)
-    {
-        return User::getDB()->where($where)->update($data);
-    }
     /**
      * @param $keyword
      * @return BaseQuery

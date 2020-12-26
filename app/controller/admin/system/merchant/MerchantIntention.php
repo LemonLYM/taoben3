@@ -58,7 +58,8 @@ class MerchantIntention extends BaseController
     {
         if (!$this->repository->getWhereCount(['mer_intention_id' => $id, 'is_del' => 0]))
             return app('json')->fail('数据不存在');
-        $uid = $this->userMerRepository->getUseridByMerid($id);
+        $intention = $this->repository->get($id);
+        $uid = $intention->uid;
         $item = [];
         if($uid){
             $ca = $this->caRepository->getMerCa($uid);
@@ -87,9 +88,11 @@ class MerchantIntention extends BaseController
         $status = $this->request->param('status', 0) == 1 ? 1 : 2;
         $this->repository->update($id, ['status' => $status]);
         if($status == 1){
-            $uid = $this->userMerRepository->getUseridByMerid($id);
-            app("UserRepository")->updateUserInfo($uid, ["mer_ca"=> 1]);
-            $this->userMerRepository->save(["uid"=>$uid, "mer_id"=>$id], ["status" => 1]);
+            $intention = $this->repository->get($id);
+            $uid = $intention->uid;
+            $mer_id = $this->userMerRepository->getMeridByUserid($uid);
+            app()->make(UserRepository::class)->updateUserInfo($uid, ["mer_ca"=> 1]);
+            $this->userMerRepository->save(["uid"=>$uid, "mer_id"=>$mer_id], ["status" => 1]);
             // TODO 设置商户密码?
         }
         return app('json')->success('修改成功');

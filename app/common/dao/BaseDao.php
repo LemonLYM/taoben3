@@ -225,4 +225,23 @@ abstract class BaseDao
        if(!$res)$res = $this->getModel()::create($where);
        return $res;
     }
+
+    /**
+     * 保存数据
+     * @param $where
+     * @param $data
+     * @return mixed
+     */
+    public function save($where, $data)
+    {
+        $db = ($this->getModel()::getDB());
+        $model = $db->where($where)->find();
+        if($model){
+            $db->where([$this->getPk() => $model->{$this->getPk()}])->update($data);
+        }else{
+            $db->insert(array_merge($where,$data));
+        }
+        return true;
+    }
+
 }
