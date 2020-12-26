@@ -40,7 +40,7 @@ class UserMerMiddleware extends BaseMiddleware
          */
         $repository = app()->make(MerchantRepository::class);
 
-        $mer_id = app()->make(UserMerRepository::class)->getMeridByUserid($this->request->userId());
+        $mer_id = app()->make(UserMerRepository::class)->getMeridByUserid($this->request->uid());
         $admin = $repository->getByMerId($mer_id);
 
 
