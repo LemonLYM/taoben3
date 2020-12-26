@@ -245,7 +245,7 @@ status|是|int | 0下架, 1上架|
 ```
 {"status":200,"message":"修改成功"}
 ```
-### 下架商品
+### 获取编辑商品信息
 
 请求方式: `post` 路由:  `/api/store/product/FromByUser/{pro_id}`
 
