@@ -157,8 +157,4 @@ class MerchantDao extends BaseDao
         return $this->getModel()::where('mer_id', $merId)->inc('copy_product_num', $num)->update();
     }
 
-
-    public function getByMerId($merId){
-        return $this->getModel()::where('mer_id', $merId)->find();
-    }
 }

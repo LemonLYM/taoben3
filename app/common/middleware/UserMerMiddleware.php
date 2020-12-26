@@ -41,7 +41,13 @@ class UserMerMiddleware extends BaseMiddleware
         $repository = app()->make(MerchantRepository::class);
 
         $mer_id = app()->make(UserMerRepository::class)->getMeridByUserid($this->request->uid());
-        $admin = $repository->getByMerId($mer_id);
+        $merchant = $repository->get($mer_id);
+
+        /**
+         * @var MerchantAdminRepository $MerAdminrepository
+         */
+        $MerAdminrepository = app()->make(MerchantAdminRepository::class);
+        $admin = $MerAdminrepository->getByMerId($mer_id);
 
 
         $request->macro('adminId', function () use (&$admin) {
@@ -52,6 +58,10 @@ class UserMerMiddleware extends BaseMiddleware
         });
         $request->macro('merchantId', function () use (&$admin) {
             return $admin->mer_id;
+        });
+
+        $request->macro('merchant', function () use (&$merchant) {
+            return $merchant;
         });
 
     }
