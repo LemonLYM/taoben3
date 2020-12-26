@@ -52,7 +52,7 @@ class MerchantIntention extends BaseController
         try{
             $merData = [
                 'category_id' =>1,         //商户分类
-                'mer_name' =>$this->userInfo->nickname. "的店铺",        //商户名称
+                'mer_name' =>$data['mer_name']. "的店铺",        //商户名称
                 'mer_account' =>"",         //商户账号
                 'mer_password' =>"",        //商户密码
                 'real_name' =>"",       //商户姓名
@@ -63,12 +63,12 @@ class MerchantIntention extends BaseController
                 'status' =>"",          //开启状态
                 'commission_rate' =>"",         //提成比例
             ];
-            $caData = array_merge($data["idCardImages"], $data["images"][0]);
+            $caData = array_merge($data["idCardImages"], [$data["images"][0]]);
         }catch (\Exception $e){
             throw new AuthException('参数错误');
         }
         //创建店铺
-        $mer_id = app()->make(MerchantRepository::class)->MerchantRepository($merData);
+        $mer_id = app()->make(MerchantRepository::class)->createMerchant($merData);
         //创建审核
         app()->make(UserCaRepository::class)->merSave($data['uid'], $caData);
         //创建店铺对应关系

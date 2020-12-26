@@ -185,7 +185,7 @@ class MerchantRepository extends BaseRepository
             $make->createMerchantAccount($merchant, $account, $password);
             app()->make(ShippingTemplateRepository::class)->createDefault($merchant->mer_id);
             app()->make(ProductCopyRepository::class)->defaulCopyNum($merchant->mer_id);
-            return $merchant->mer-id;
+            return $merchant->mer_id;
         });
 
     }
