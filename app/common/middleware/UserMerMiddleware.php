@@ -34,7 +34,7 @@ class UserMerMiddleware extends BaseMiddleware
     public function before(Request $request)
     {
 
-        $this->request->userId();
+        $this->request->uid();
         /**
          * @var MerchantRepository $repository
          */
