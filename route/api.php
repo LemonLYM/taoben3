@@ -12,6 +12,7 @@ use app\common\middleware\AllowOriginMiddleware;
 use app\common\middleware\CheckSiteOpenMiddleware;
 use app\common\middleware\InstallMiddleware;
 use app\common\middleware\MerchantTokenMiddleware;
+use app\common\middleware\UserMerMiddleware;
 use app\common\middleware\UserTokenMiddleware;
 use app\common\middleware\VisitProductMiddleware;
 use think\facade\Route;
@@ -236,7 +237,7 @@ Route::group('api/', function () {
         Route::post('createByUser', 'merchant.store.product.Product/createByUser')->name('merchantStoreProductCreateByUser');
         Route::post('updateByUser/:id', 'merchant.store.product.Product/updateByUser')->name('merchantStoreProductUpdate');
         Route::post('status/:id', 'merchant.store.product.Product/switchStatus')->name('merchantStoreProductSwitchStatus');
-    })->middleware(MerchantTokenMiddleware::class, false);
+    })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
 
 
     //微信支付回调
