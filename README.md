@@ -446,7 +446,7 @@ limit| 否| int| 分页大小|10
 
 
 ### 获取订单
-请求方式: `get` 路由:  `/api/store/product/my/lst`
+请求方式: `get` 路由:  `/api/store/order/my/lst`
 
 #### 请求参数
  参数名 | 是否必须 | 类型 | 描述 | 长度
@@ -630,6 +630,28 @@ username| 否| string | 用户筛选. 不知道干嘛的先不用.
         ]
     }
 }
+```
+
+### 发货接口
+
+请求方式: `post` 路由:  `/api/store/order/delivery`
+
+#### 请求参数
+参数名 | 是否必须 | 类型 | 描述 | 长度
+--- | --- | --- | --- | --- 
+delivery_type| 是| int| 1快递, 2人工配送(先不用这个)
+delivery_name| 是| int| 快递公司id
+delivery_id| 是| string| 快递单号
+
+```
+{"delivery_type":1,"delivery_name":188,"delivery_id":"1121321313123"}
+```
+
+#### 返回值
+```{
+       "status": 200,
+       "message": "发货成功"
+   }
 ```
 
 
