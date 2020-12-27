@@ -387,7 +387,249 @@ limit| 否| int| 分页大小|10
 同搜索接口, 而外添加参数"status"审核状态, "is_show" 上架状态
 
 ```
+{
+    "status": 200,
+    "message": "success",
+    "data": {
+        "count": 1,
+        "list": [
+            {
+                "product_id": 234,
+                "mer_id": 73,
+                "brand_id": 0,
+                "unit_name": "",
+                "mer_status": 0,
+                "rate": "5.0",
+                "reply_count": 0,
+                "store_info": "1",
+                "cate_id": 244,
+                "image": "http://apis.taoben888.cn/uploads/def/20201203/78954f5fa6447e474707d342a3f406de.png",
+                "slider_image": [
+                    "http://apis.taoben888.cn/uploads/def/20201203/78954f5fa6447e474707d342a3f406de.png"
+                ],
+                "store_name": "1",
+                "keyword": "1",
+                "sort": 0,
+                "rank": 0,
+                "is_show": 0,
+                "sales": 0,
+                "price": "1.00",
+                "extension_type": 0,
+                "refusal": null,
+                "cost": "0.00",
+                "ot_price": "0.00",
+                "stock": 0,
+                "is_gift_bag": 0,
+                "care_count": 0,
+                "status": 0,
+                "is_used": 1,
+                "create_time": "2020-12-22 01:47:09",
+                "province": "",
+                "city": "",
+                "merchant": {
+                    "is_trader": 1,
+                    "mer_id": 73,
+                    "mer_name": "京东商城",
+                    "mer_avatar": "http://mer.crmeb.net/uploads/def/20200816/49989c75324ef71956c91e79ae49b10d.jpg",
+                    "product_score": "5.0",
+                    "service_score": "5.0",
+                    "postage_score": "5.0",
+                    "service_phone": "",
+                    "care_count": 0
+                },
+                "issetCoupon": null
+            }
+        ]
+    }
+}
+```
 
+
+### 获取订单
+请求方式: `get` 路由:  `/api/store/product/my/lst`
+
+#### 请求参数
+ 参数名 | 是否必须 | 类型 | 描述 | 长度
+--- | --- | --- | --- | --- 
+keywords| 否| string |关键字|
+status| 否|  int |订单类型 , 不传是全部, 1待付款,2待发货,3待收货,4待评价,5交易完成,6已退款,7已删除|
+date| 否|  string| 时间筛选 "2020/12/09-2020/12/10", 或者"today", "yesterday"
+page| 否| int|  分页|
+limit| 否| int|分页|
+username| 否| string | 用户筛选. 不知道干嘛的先不用.
+
+#### 返回值
+
+现有列表接口
+
+```
+{
+    "status": 200,
+    "message": "success",
+    "data": {
+        "count": 2,
+        "list": [
+            {
+                "order_id": 4,
+                "group_order_id": 4,
+                "order_sn": "wx1608992110965678391",
+                "uid": 1,
+                "real_name": "罗怡",
+                "user_phone": "18613884482",
+                "user_address": "北京市北京市顺义区 顺义",
+                "cart_id": "5",
+                "total_num": 1,
+                "total_price": "880.00",
+                "total_postage": "1.00",
+                "pay_price": "881.00",
+                "pay_postage": "1.00",
+                "extension_one": "0.00",
+                "extension_two": "0.00",
+                "commission_rate": "20.0000",
+                "coupon_id": "",
+                "coupon_price": "0.00",
+                "order_type": 0,
+                "paid": 0,
+                "pay_time": null,
+                "pay_type": 2,
+                "create_time": "2020-12-26 22:15:11",
+                "status": 0,
+                "delivery_type": null,
+                "delivery_name": null,
+                "delivery_id": null,
+                "mark": "",
+                "remark": null,
+                "admin_mark": null,
+                "verify_code": null,
+                "verify_time": null,
+                "verify_service_id": 0,
+                "mer_id": 65,
+                "reconciliation_id": 0,
+                "cost": "500.00",
+                "is_del": 1,
+                "is_system_del": 0,
+                "orderProduct": [
+                    {
+                        "order_product_id": 4,
+                        "order_id": 4,
+                        "uid": 1,
+                        "cart_id": 5,
+                        "product_id": 6,
+                        "extension_one": "0.00",
+                        "extension_two": "0.00",
+                        "product_sku": "0faf6fb5e600",
+                        "is_refund": 0,
+                        "product_num": 1,
+                        "refund_num": 1,
+                        "is_reply": 0,
+                        "product_price": "880.00",
+                        "cart_info": {
+                            "product": {
+                                "product_id": 6,
+                                "image": "http://mer.crmeb.net/uploads/def/20200816/9a6a2e1231fb19517ed1de71206a0657.jpg",
+                                "store_name": "智能定制休闲单西 布雷泽海军蓝轻薄斜纹",
+                                "is_show": 1,
+                                "status": 1,
+                                "is_del": 0,
+                                "unit_name": "件",
+                                "price": "880.00",
+                                "mer_status": 1,
+                                "temp_id": 99,
+                                "give_coupon_ids": [
+                                    "1",
+                                    "2"
+                                ],
+                                "is_gift_bag": 0,
+                                "is_used": 1,
+                                "product_type": 0,
+                                "old_product_id": 0,
+                                "temp": {
+                                    "shipping_template_id": 99,
+                                    "name": "运费1续费1",
+                                    "type": 0,
+                                    "appoint": 1,
+                                    "undelivery": 1,
+                                    "mer_id": 65,
+                                    "is_default": 0,
+                                    "sort": 1,
+                                    "create_time": "2020-07-08 19:35:32",
+                                    "region": [
+                                        {
+                                            "shipping_template_region_id": 388,
+                                            "temp_id": 99,
+                                            "city_id": "0",
+                                            "first": "1.00",
+                                            "first_price": "1.00",
+                                            "continue": "1.00",
+                                            "continue_price": "1.00"
+                                        }
+                                    ],
+                                    "undelives": null,
+                                    "free": []
+                                }
+                            },
+                            "productAttr": {
+                                "image": "http://mer.crmeb.net/uploads/def/20200816/9a6a2e1231fb19517ed1de71206a0657.jpg",
+                                "extension_one": "0.00",
+                                "extension_two": "0.00",
+                                "product_id": 6,
+                                "stock": 95,
+                                "price": "880.00",
+                                "unique": "0faf6fb5e600",
+                                "sku": "",
+                                "volume": "1.00",
+                                "weight": "1.00",
+                                "ot_price": "1680.00",
+                                "cost": "500.00",
+                                "bc_extension_one": 17.6,
+                                "bc_extension_two": 8.8
+                            },
+                            "product_type": 0
+                        },
+                        "create_time": "2020-12-26 22:15:11"
+                    }
+                ],
+                "merchant": {
+                    "mer_id": 65,
+                    "mer_name": "千鸟格服饰旗舰店"
+                },
+                "verifyService": null
+            }
+        ],
+        "stat": [
+            {
+                "className": "el-icon-s-goods",
+                "count": 0,
+                "field": "件",
+                "name": "已支付订单数量"
+            },
+            {
+                "className": "el-icon-s-order",
+                "count": 0,
+                "field": "元",
+                "name": "实际支付金额"
+            },
+            {
+                "className": "el-icon-s-cooperation",
+                "count": 0,
+                "field": "元",
+                "name": "已退款金额"
+            },
+            {
+                "className": "el-icon-s-cooperation",
+                "count": 0,
+                "field": "元",
+                "name": "微信支付金额"
+            },
+            {
+                "className": "el-icon-s-finance",
+                "count": 0,
+                "field": "元",
+                "name": "余额支付金额"
+            }
+        ]
+    }
+}
 ```
 
 

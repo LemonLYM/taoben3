@@ -241,6 +241,10 @@ Route::group('api/', function () {
         Route::get('my/lst', 'merchant.store.product.Product/myLst'); // 我发布的
     })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
 
+    Route::group("store/order", function(){
+        Route::get('lst', 'merchant.store.order.Order/lst'); // 我发布的
+    })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
+
 
     //微信支付回调
     Route::any('notice/wechat_pay', 'api.Common/wechatNotify')->name('wechatNotify');
