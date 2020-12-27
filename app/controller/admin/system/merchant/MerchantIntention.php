@@ -92,7 +92,7 @@ class MerchantIntention extends BaseController
             $uid = $intention->uid;
             $mer_id = $this->userMerRepository->getMeridByUserid($uid);
             app()->make(UserRepository::class)->updateUserInfo($uid, ["mer_ca"=> 1]);
-            $this->userMerRepository->save(["uid"=>$uid, "mer_id"=>$mer_id], ["status" => 1]);
+            $this->userMerRepository->save(["uid"=>$uid, "mer_id"=>$mer_id], ["status" => 1, "mer_state" => 1]);
             // TODO 设置商户密码?
         }
         return app('json')->success('修改成功');

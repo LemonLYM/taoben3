@@ -21,6 +21,7 @@ use app\common\repositories\user\UserRelationRepository;
 use app\common\repositories\user\UserVisitRepository;
 use app\common\repositories\wechat\RoutineQrcodeRepository;
 use app\common\repositories\wechat\WechatQrcodeRepository;
+use app\utils\AddressUtils;
 use crmeb\services\DownloadImageService;
 use crmeb\services\QrcodeService;
 use crmeb\services\SwooleTaskService;
@@ -608,8 +609,8 @@ class ProductRepository extends BaseRepository
         $content = $data['content']['content'];
         unset($data['content']);
         $data['content'] = $content;
-        $data['province_name'] = "广东省";
-        $data['city_name'] = "深圳市";
+        $data['province_name'] = AddressUtils::getAddressName($data['province']);;
+        $data['city_name'] = AddressUtils::getAddressName($data['city']);;
 
         $data->visible($field);
 
