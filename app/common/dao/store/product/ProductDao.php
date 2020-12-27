@@ -117,7 +117,7 @@ class ProductDao extends BaseDao
         }
         $query->withSearch($keyArray, $whereArr);
         $query->when(($merId !== null), function ($query) use ($merId) {
-            $query->where('Product.mer_id', $merId);
+            $query->where('mer_id', $merId);
         });
         isset($where['province']) && !empty($where['province']) && $query->where('province', $where['province']);
         isset($where['city']) && !empty($where['city']) && $query->where('city', $where['city']);

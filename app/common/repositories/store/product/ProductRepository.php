@@ -56,6 +56,14 @@ class ProductRepository extends BaseRepository
         $this->dao = $dao;
     }
 
+    public function setFiled($filed){
+        $this->filed = $filed;
+    }
+
+    public function addFiled($filed){
+        $this->filed .= "," . trim($filed,",");
+    }
+
     /**
      * @Author:Qinii
      * @Date: 2020/5/11
@@ -812,11 +820,14 @@ class ProductRepository extends BaseRepository
      * @param $userInfo
      * @return array
      */
-    public function getApiSearch($merId, array $where, int $page, int $limit, $userInfo)
+    public function getApiSearch($merId, array $where, int $page, int $limit, $userInfo, $all = false)
     {
         if (isset($where['price_on']) && $where['price_on'] !== '') $where['price'] = [$where['price_on'], $where['price_off']];
         unset($where['price_on'], $where['price_off']);
-        $where = array_merge($where, $this->dao->productShow());
+        if(!$all){
+            // 只显示正常售卖的.
+            $where = array_merge($where, $this->dao->productShow());
+        }
 
         //搜索记录
         if ($userInfo && isset($where['keyword']) && !empty($where['keyword']))

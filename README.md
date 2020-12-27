@@ -366,3 +366,29 @@ city| 否| int| 市id|
     }
 }
 ```
+
+
+### 我发布的商品
+
+请求方式: `get` 路由:  `/api/store/product/my/lst`
+
+#### 请求参数
+
+ 参数名 | 是否必须 | 类型 | 描述 | 长度
+--- | --- | --- | --- | --- 
+cate_id| 否| int| 分类|
+order| 否| string| 排序, price_asc,price_desc |
+keyword| 否| string| 关键字| 要求url转码, 例如: 淘本 => %E5%89%A7%E6%9C%AC
+page| 否| int| 分页 |1
+limit| 否| int| 分页大小|10
+
+#### 返回值
+
+同搜索接口, 而外添加参数"status"审核状态, "is_show" 上架状态
+
+```
+
+```
+
+
+

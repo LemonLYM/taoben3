@@ -7,6 +7,7 @@
 namespace app\controller\merchant\store\product;
 
 use app\common\repositories\store\order\StoreCartRepository;
+use crmeb\exceptions\AuthException;
 use think\App;
 use crmeb\basic\BaseController;
 use app\validate\merchant\StoreProductValidate as validate;
@@ -252,5 +253,26 @@ class Product extends BaseController
             return app('json')->fail('只能删除回收站的商品');
         $this->repository->restore($id);
         return app('json')->success('商品已恢复');
+    }
+
+
+
+
+    /**
+     * 我发布的
+     * @Author:Qinii
+     * @Date: 2020/5/28
+     * @return mixede
+     */
+    public function myLst()
+    {
+        [$page, $limit] = $this->getPage();
+        $where = $this->request->params(['keyword', 'cate_id', 'order']);
+        $merid = $this->request->merchantId();
+        if(!$merid)
+            throw new AuthException('不是商户');
+
+        $this->repository->addFiled("status, is_show");
+        return app('json')->success($this->repository->getApiSearch($merid, $where, $page, $limit, $this->request->userInfo(), true));
     }
 }
