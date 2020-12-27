@@ -348,7 +348,7 @@ class ProductRepository extends BaseRepository
             'temp_id' => $data['temp_id'],
             'extension_type' => $data['extension_type'],
             'spec_type' => $data['spec_type'],
-            'status' => $data['status'],
+            'status' => 0,
             'give_coupon_ids' => $give_coupon_ids,
             'mer_status' => $data['mer_status'],
             'new_percentage' => $data['new_percentage'],
