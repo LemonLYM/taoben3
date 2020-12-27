@@ -232,7 +232,7 @@ class ProductRepository extends BaseRepository
         Db::transaction(function () use ($id, $data, $merId, $productType) {
 
             $product = $this->setProduct($data);
-            $settleParams = $this->setAttrValue($data, $id, $productType, 1);
+            $settleParams = $this->setAttrValueByUser($data, $id, $productType, 1);
             $settleParams['cate'] = $this->setMerCate($data['mer_cate_id'], $id, $merId);
             $settleParams['attr'] = $this->setAttr($data['attr'], $id);
             $this->save($id, $settleParams, $data['content'], $product);
