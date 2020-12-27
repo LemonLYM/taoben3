@@ -28,6 +28,7 @@ use app\common\repositories\system\merchant\FinancialRecordRepository;
 use app\common\repositories\system\merchant\MerchantRepository;
 use app\common\repositories\user\UserAddressRepository;
 use app\common\repositories\user\UserBillRepository;
+use app\common\repositories\user\UserMerRepository;
 use app\common\repositories\user\UserRepository;
 use app\common\repositories\wechat\RoutineQrcodeRepository;
 use app\common\repositories\wechat\WechatUserRepository;
@@ -898,15 +899,23 @@ class StoreOrderRepository extends BaseRepository
         $userBillRepository = app()->make(UserBillRepository::class);
         //TODO 添加冻结佣金
         if ($order->extension_one > 0 && $user->spread_uid) {
-            $userBillRepository->incBill($user->spread_uid, 'brokerage', 'order_one', [
-                'link_id' => $order['order_id'],
-                'status' => 0,
-                'title' => '获得推广佣金',
-                'number' => $order->extension_one,
-                'mark' => $user['nickname'] . '成功消费' . floatval($order['pay_price']) . '元,奖励推广佣金' . floatval($order->extension_one),
-                'balance' => 0
-            ]);
+//            $userBillRepository->incBill($user->spread_uid, 'brokerage', 'order_one', [
+//                'link_id' => $order['order_id'],
+//                'status' => 0,
+//                'title' => '获得推广佣金',
+//                'number' => $order->extension_one,
+//                'mark' => $user['nickname'] . '成功消费' . floatval($order['pay_price']) . '元,奖励推广佣金' . floatval($order->extension_one),
+//                'balance' => 0
+//            ]);
+
+            $merUserId = app()->make(UserMerRepository::class)->getUseridByMerid($order->mer_id);
+
+
             $userRepository = app()->make(UserRepository::class);
+
+            $userRepository->incrCredit($merUserId);
+            $userRepository->incrCredit($user->uid);
+
             $userRepository->incBrokerage($user->spread_uid, $order->extension_one);
             app()->make(FinancialRecordRepository::class)->dec([
                 'order_id' => $order->order_id,
@@ -917,26 +926,29 @@ class StoreOrderRepository extends BaseRepository
                 'number' => $order->extension_one,
             ], $order->mer_id);
         }
-        if ($order->extension_two > 0 && $user->top_uid) {
-            $userBillRepository->incBill($user->top_uid, 'brokerage', 'order_two', [
-                'link_id' => $order['order_id'],
-                'status' => 0,
-                'title' => '获得推广佣金',
-                'number' => $order->extension_two,
-                'mark' => $user['nickname'] . '成功消费' . floatval($order['pay_price']) . '元,奖励推广佣金' . floatval($order->extension_two),
-                'balance' => 0
-            ]);
-            $userRepository = app()->make(UserRepository::class);
-            $userRepository->incBrokerage($user->top_uid, $order->extension_two);
-            app()->make(FinancialRecordRepository::class)->dec([
-                'order_id' => $order->order_id,
-                'order_sn' => $order->order_sn,
-                'user_info' => $userRepository->getUsername($user->top_uid),
-                'user_id' => $user->top_uid,
-                'financial_type' => 'brokerage_two',
-                'number' => $order->extension_two,
-            ], $order->mer_id);
-        }
+        //添加积分
+
+
+//        if ($order->extension_two > 0 && $user->top_uid) {
+//            $userBillRepository->incBill($user->top_uid, 'brokerage', 'order_two', [
+//                'link_id' => $order['order_id'],
+//                'status' => 0,
+//                'title' => '获得推广佣金',
+//                'number' => $order->extension_two,
+//                'mark' => $user['nickname'] . '成功消费' . floatval($order['pay_price']) . '元,奖励推广佣金' . floatval($order->extension_two),
+//                'balance' => 0
+//            ]);
+//            $userRepository = app()->make(UserRepository::class);
+//            $userRepository->incBrokerage($user->top_uid, $order->extension_two);
+//            app()->make(FinancialRecordRepository::class)->dec([
+//                'order_id' => $order->order_id,
+//                'order_sn' => $order->order_sn,
+//                'user_info' => $userRepository->getUsername($user->top_uid),
+//                'user_id' => $user->top_uid,
+//                'financial_type' => 'brokerage_two',
+//                'number' => $order->extension_two,
+//            ], $order->mer_id);
+//        }
     }
 
     /**
@@ -1465,7 +1477,12 @@ class StoreOrderRepository extends BaseRepository
         $count = $query->count();
         $list = $query->with(['orderProduct', 'merchant' => function ($query) {
             return $query->field('mer_id,mer_name');
-        }])->page($page, $limit)->order('pay_time DESC')->select();
+        },
+//            'userMer' => function($query){
+//            return $query->field('uid,credit');
+//
+//        }
+        ])->page($page, $limit)->order('pay_time DESC')->select();
 
         return compact('list', 'count');
     }

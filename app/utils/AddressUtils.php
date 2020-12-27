@@ -16,6 +16,9 @@ class AddressUtils
     }
 
     public static function getAddressName($id){
+        if($id== 0){
+            return  "";
+        }
         $name = Cache::get('address_' . $id);
         if($name){
             return $name;

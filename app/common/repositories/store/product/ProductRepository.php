@@ -835,11 +835,15 @@ class ProductRepository extends BaseRepository
 
         $query = $this->dao->search($merId, $where);
         $count = $query->count($this->dao->getPk());
-        $list = $query->page($page, $limit)->setOption('field', [])->field($this->filed)->with(['merchant', 'issetCoupon'])->select();
+        $list = $query->page($page, $limit)->setOption('field', [])->field($this->filed)->with(['merchant', 'issetCoupon', 'userMer'])->select();
+        //
         if ($this->getUserIsPromoter($userInfo)) $list = $list->each(function ($item) {
-            return $item['max_extension'] = $item->max_extension;
-            return $item['province_name'] = AddressUtils::getAddressName($item['province']);
-            return $item['city_name'] = AddressUtils::getAddressName($item['city']);
+            $item['max_extension'] = $item->max_extension;
+            $item['province_name'] = AddressUtils::getAddressName($item['province']);
+            $item['city_name'] = AddressUtils::getAddressName($item['city']);
+            $item['merchant']['credit'] = $item['userMer']['credit'];
+            unset($item['userMer']);
+            return $item;
         });
         return compact('count', 'list');
     }
@@ -1085,6 +1089,7 @@ class ProductRepository extends BaseRepository
      */
     public function getUserIsPromoter($userInfo)
     {
+        return true;
         return (isset($userInfo['is_promoter']) && $userInfo['is_promoter'] && systemConfig('extension_status')) ? true : false;
     }
 

@@ -922,4 +922,28 @@ class UserRepository extends BaseRepository
     {
         return $this->dao->save(['uid'=> $uid], $data);
     }
+
+    public function incrCredit($uid)
+    {
+        $user = $this->dao->get($uid);
+        if($user && $user->credit < 8){
+            $credit = 0;
+            switch ($user->credit){
+                case 0: $credit = 1; break;
+                case 1: $credit = 2; break;
+                case 2:
+                case 3:
+                case 4: $credit = 5;  break;
+                case 5:
+                case 6: $credit = 7; break;
+                case 7: $credit = 8; break;
+            }
+
+            $this->dao->update($user->uid, ['credit' => $credit]);
+
+        }
+
+
+
+    }
 }

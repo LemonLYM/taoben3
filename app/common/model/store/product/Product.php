@@ -14,6 +14,8 @@ use app\common\model\store\StoreBrand;
 use app\common\model\store\StoreCategory;
 use app\common\model\store\StoreSeckillActive;
 use app\common\model\system\merchant\Merchant;
+use app\common\model\user\User;
+use app\common\model\user\UserMer;
 use app\common\repositories\store\StoreCategoryRepository;
 use think\db\BaseQuery;
 use think\model\concern\SoftDelete;
@@ -299,4 +301,12 @@ class Product extends BaseModel
     {
         $query->where('mer_status',$value);
     }
+
+    public function userMer(){
+        return $this->hasOneThrough(User::class, UserMer::class, "mer_id", "uid", "mer_id", "uid");
+    }
 }
+// uumm => mumu
+// mumm => mumm
+//
+//

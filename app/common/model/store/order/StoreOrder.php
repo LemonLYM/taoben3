@@ -15,6 +15,7 @@ use app\common\model\BaseModel;
 use app\common\model\store\service\StoreService;
 use app\common\model\system\merchant\Merchant;
 use app\common\model\user\User;
+use app\common\model\user\UserMer;
 use app\common\repositories\store\MerchantTakeRepository;
 
 class StoreOrder extends BaseModel
@@ -48,6 +49,10 @@ class StoreOrder extends BaseModel
     public function user()
     {
         return $this->hasOne(User::class, 'uid', 'uid');
+    }
+
+    public function userMer(){
+        return $this->hasOneThrough(UserMer::class, Merchant::class, "uid", "mer_id", "order_id", "id");
     }
 
     public function groupOrder()
