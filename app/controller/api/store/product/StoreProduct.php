@@ -40,7 +40,7 @@ class StoreProduct extends BaseController
     public function lst()
     {
         [$page, $limit] = $this->getPage();
-        $where = $this->request->params(['keyword', 'cate_id', 'order', 'price_on', 'price_off', 'brand_id', 'pid']);
+        $where = $this->request->params(['keyword', 'cate_id', 'order', 'price_on', 'price_off', 'brand_id', 'pid', "city", "province"]);
 	return app('json')->success($this->repository->getApiSearch(null, $where, $page, $limit, $this->userInfo));
     }
 

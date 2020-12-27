@@ -45,7 +45,7 @@ class ProductRepository extends BaseRepository
 {
 
     protected $dao;
-    protected $filed = 'product_id,mer_id,brand_id,unit_name,mer_status,rate,reply_count,store_info,cate_id,image,slider_image,store_name,keyword,sort,rank,is_show,sales,price,extension_type,refusal,cost,ot_price,stock,is_gift_bag,care_count,status,is_used,create_time';
+    protected $filed = 'product_id,mer_id,brand_id,unit_name,mer_status,rate,reply_count,store_info,cate_id,image,slider_image,store_name,keyword,sort,rank,is_show,sales,price,extension_type,refusal,cost,ot_price,stock,is_gift_bag,care_count,status,is_used,create_time,province,city';
 
     /**
      * ProductRepository constructor.
@@ -817,6 +817,7 @@ class ProductRepository extends BaseRepository
         if (isset($where['price_on']) && $where['price_on'] !== '') $where['price'] = [$where['price_on'], $where['price_off']];
         unset($where['price_on'], $where['price_off']);
         $where = array_merge($where, $this->dao->productShow());
+
         //搜索记录
         if ($userInfo && isset($where['keyword']) && !empty($where['keyword']))
             app()->make(UserVisitRepository::class)->searchProduct($userInfo['uid'], $where['keyword']);
@@ -826,6 +827,8 @@ class ProductRepository extends BaseRepository
         $list = $query->page($page, $limit)->setOption('field', [])->field($this->filed)->with(['merchant', 'issetCoupon'])->select();
         if ($this->getUserIsPromoter($userInfo)) $list = $list->each(function ($item) {
             return $item['max_extension'] = $item->max_extension;
+            return $item['province_name'] = AddressUtils::getAddressName($item['province']);
+            return $item['city_name'] = AddressUtils::getAddressName($item['city']);
         });
         return compact('count', 'list');
     }

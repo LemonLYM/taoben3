@@ -287,3 +287,82 @@ status|是|int | 0下架, 1上架|
     }
 }
 ```
+
+### 查询商品
+
+请求方式: `get` 路由:  `/api/store/product/lst`
+
+
+#### 请求参数
+
+ 参数名 | 是否必须 | 类型 | 描述 | 长度
+--- | --- | --- | --- | --- 
+cate_id| 否| int| 分类|
+order| 否| string| 排序, price_asc,price_desc |
+price_on| 否| string| 最低价,必须是数字|
+price_off| 否| string| 最高价,必须是数字|
+brand_id| 否| | |
+keyword| 否| string| 关键字| 要求url转码, 例如: 淘本 => %E5%89%A7%E6%9C%AC
+page| 否| int| 分页 |1
+limit| 否| int| 分页大小|10
+province| 否| int| 省id|
+city| 否| int| 市id|
+
+#### 返回值
+```
+{
+    "status": 200,
+    "message": "success",
+    "data": {
+        "count": 1,
+        "list": [
+            {
+                "product_id": 331,
+                "mer_id": 65,
+                "brand_id": 119,
+                "unit_name": "e",
+                "mer_status": 1,
+                "rate": "5.0",
+                "reply_count": 0,
+                "store_info": "e",
+                "cate_id": 172,
+                "image": "http://mer.crmeb.net/uploads/def/20200816/150f1d59ec4ec02a0258dc2fc3ea85a1.jpg",
+                "slider_image": [
+                    "http://mer.crmeb.net/uploads/def/20200816/8175bc7b8a3a51de0b41c20f00178d7a.jpg"
+                ],
+                "store_name": "e",
+                "keyword": "",
+                "sort": 0,
+                "rank": 0,
+                "is_show": 1,
+                "sales": 0,
+                "price": null,
+                "extension_type": 0,
+                "refusal": null,
+                "cost": null,
+                "ot_price": null,
+                "stock": 0,
+                "is_gift_bag": 0,
+                "care_count": 0,
+                "status": 1,
+                "is_used": 1,
+                "create_time": "2020-12-26 01:13:48",
+                "province": "483250",
+                "city": "487721",
+                "merchant": {
+                    "is_trader": 0,
+                    "mer_id": 65,
+                    "mer_name": "千鸟格服饰旗舰店",
+                    "mer_avatar": "http://mer.crmeb.net/uploads/def/20200816/49989c75324ef71956c91e79ae49b10d.jpg",
+                    "product_score": "5.0",
+                    "service_score": "5.0",
+                    "postage_score": "5.0",
+                    "service_phone": "15109234132",
+                    "care_count": 13
+                },
+                "issetCoupon": null
+            }
+        ]
+    }
+}
+```

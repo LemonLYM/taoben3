@@ -119,6 +119,9 @@ class ProductDao extends BaseDao
         $query->when(($merId !== null), function ($query) use ($merId) {
             $query->where('Product.mer_id', $merId);
         });
+        isset($where['province']) && !empty($where['province']) && $query->where('province', $where['province']);
+        isset($where['city']) && !empty($where['city']) && $query->where('city', $where['city']);
+
         $query->when(isset($where['hot_type']) && $where['hot_type'] !== '', function ($query) use ($where) {
             if ($where['hot_type'] == 'new')
                 $query->where('is_new', 1);
