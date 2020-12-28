@@ -1007,10 +1007,10 @@ class ProductRepository extends BaseRepository
             if ($productType) {
                 $sku[$value['sku']]['stock'] = $value['stock'] - $make->seckillSkuOrderCounut($value['unique']); //获取sku的销量
             }
-            if ($this->getUserIsPromoter($userInfo)) {
-                $sku[$value['sku']]['extension_one'] = $value->bc_extension_one;
-                $sku[$value['sku']]['extension_two'] = $value->bc_extension_two;
-            }
+//            if ($this->getUserIsPromoter($userInfo)) {
+//                $sku[$value['sku']]['extension_one'] = $value->bc_extension_one;
+//                $sku[$value['sku']]['extension_two'] = $value->bc_extension_two;
+//            }
 
         }
         return $sku;
@@ -1089,7 +1089,6 @@ class ProductRepository extends BaseRepository
      */
     public function getUserIsPromoter($userInfo)
     {
-        return true;
         return (isset($userInfo['is_promoter']) && $userInfo['is_promoter'] && systemConfig('extension_status')) ? true : false;
     }
 
