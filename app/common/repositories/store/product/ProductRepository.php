@@ -22,6 +22,7 @@ use app\common\repositories\user\UserVisitRepository;
 use app\common\repositories\wechat\RoutineQrcodeRepository;
 use app\common\repositories\wechat\WechatQrcodeRepository;
 use app\utils\AddressUtils;
+use app\utils\CateUtils;
 use crmeb\services\DownloadImageService;
 use crmeb\services\QrcodeService;
 use crmeb\services\SwooleTaskService;
@@ -596,18 +597,21 @@ class ProductRepository extends BaseRepository
 
         $field = ["product_id", "image", "slider_image", 'store_name', 'store_info',
             'keyword', 'price', 'new_percentage', 'cost', 'province', 'city', 'stock',
-            'postage', "content", "attr","mer_cate_id", "province_name", "city_name"];
+            'postage', "content", "attr","mer_cate_id",'mer_cate_name', "province_name", "city_name"];
         $data = $this->dao->getWhere(['product_id' => $pid], '*', $with)->append(['seckill_status']);
         $where = [['coupon_id', 'in', $data['give_coupon_ids']]];
         $data['coupon'] = app()->make(StoreCouponRepository::class)->selectWhere($where, 'coupon_id,title')->toArray();
         $arr = [];
+        $arrName = [];
         if (isset($data['merCateId'])) {
             foreach ($data['merCateId'] as $i) {
                 $arr[] = $i['mer_cate_id'];
+                $arrName[] = CateUtils::getAddressName($i['mer_cate_id']);
             }
         }
         unset($data['merCateId']);
         $data['mer_cate_id'] = $arr;
+        $data['mer_cate_name'] = $arrName;
         foreach ($data['attr'] as $k => $v) {
             $data['attr'][$k] = [
                 'value' => $v['attr_name'],
@@ -835,13 +839,22 @@ class ProductRepository extends BaseRepository
 
         $query = $this->dao->search($merId, $where);
         $count = $query->count($this->dao->getPk());
-        $list = $query->page($page, $limit)->setOption('field', [])->field($this->filed)->with(['merchant', 'issetCoupon', 'userMer'])->select();
+        $list = $query->page($page, $limit)->setOption('field', [])->field($this->filed)->with(['merchant', 'issetCoupon', 'userMer', 'merCateId'])->select();
         //
-        if ($this->getUserIsPromoter($userInfo)) $list = $list->each(function ($item) {
-            $item['max_extension'] = $item->max_extension;
+        $list = $list->each(function ($item) {
+//            $item['max_extension'] = $item->max_extension;
             $item['province_name'] = AddressUtils::getAddressName($item['province']);
             $item['city_name'] = AddressUtils::getAddressName($item['city']);
             $item['merchant']['credit'] = $item['userMer']['credit'];
+            $mer_cate_id= [];
+            $mer_cate_name = [];
+            foreach ($item['merCateId'] as $cate){
+                $mer_cate_id[] = $cate->mer_cate_id;
+                $mer_cate_name[] = CateUtils::getAddressName($cate->mer_cate_id);
+            }
+            $item['mer_cate_id'] = $mer_cate_id;
+            $item['mer_cate_name'] = $mer_cate_name;
+            unset($item['merCateId']);
             unset($item['userMer']);
             return $item;
         });

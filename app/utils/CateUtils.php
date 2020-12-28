@@ -4,10 +4,11 @@ namespace app\utils;
 
 
 use app\common\dao\store\shipping\CityDao;
+use app\common\dao\store\StoreCategoryDao;
 use think\facade\Cache;
 use think\facade\Config;
 
-class AddressUtils
+class CateUtils
 {
 
     public function __construct()
@@ -19,13 +20,13 @@ class AddressUtils
         if($id== 0){
             return  "";
         }
-        $name = Cache::get('address_' . $id);
+        $name = Cache::get('cate_' . $id);
         if($name){
             return $name;
         }else{
-            $name = (new CityDao())->selectWhere(["city_id"=>$id, "is_show" => 1], "name");
+            $name = (new StoreCategoryDao())->selectWhere(["store_category_id"=>$id, "is_show" => 1], "cate_name");
             if($name){
-                Cache::set('address_' . $id, $name[0]['name']);
+                Cache::set('cate_' . $id, $name[0]['cate_name']);
                 return $name;
             }
         }
