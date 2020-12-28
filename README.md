@@ -655,4 +655,39 @@ delivery_id| 是| string| 快递单号
 ```
 
 
+### 物流公司列表
+
+请求方式: `get` 接口: `api/order/delivery/getOptions`
+
+#### 请求参数
+
+缺省
+
+#### 返回值
+
+#### 返回参数
+ 参数名  | 类型 | 描述 | 长度
+--- | --- | --- | ---  
+data|array|物流公司模型|
+data[n].label|string| 物流公司名称|
+data[n].value|int| 物流公司id|
+
+```
+{
+    "status": 200,
+    "message": "success",
+    "data": [
+        {
+            "label": "顺丰速运",
+            "value": 188
+        },
+        {
+            "label": "圆通速递",
+            "value": 243
+        }
+    ]
+}
+```
+
+
 

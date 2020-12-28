@@ -17,6 +17,7 @@ use app\common\repositories\wechat\RoutineQrcodeRepository;
 use app\common\repositories\wechat\WechatUserRepository;
 use app\validate\api\UserAuthValidate;
 use crmeb\basic\BaseController;
+use crmeb\exceptions\AuthException;
 use crmeb\services\MiniProgramService;
 use crmeb\services\WechatService;
 use crmeb\services\YunxinSmsService;
@@ -97,6 +98,9 @@ class Auth extends BaseController
     public function userCa(UserCaRepository $userCa){
         $uid = $this->request->uid();
         $caInfo = $userCa->getUserCa($uid);
+        if(!$caInfo){
+            throw new AuthException('没有认证数据 ');
+        }
         $idCardImages =[$caInfo->img1, $caInfo->img2];
         return app('json')->success("success", ["idCardImages" => $idCardImages, "msg" => $caInfo->msg]);
     }

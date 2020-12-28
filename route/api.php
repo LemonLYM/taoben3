@@ -247,6 +247,10 @@ Route::group('api/', function () {
     })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
 
 
+    //快递公司信息
+    Route::any('order/delivery/getOptions', 'merchant.store.order.Order/getOptions')->name('wechatNotify');
+
+
     //微信支付回调
     Route::any('notice/wechat_pay', 'api.Common/wechatNotify')->name('wechatNotify');
     //小程序支付回调

@@ -11,6 +11,7 @@ namespace app\controller\merchant\store\order;
 
 use app\common\repositories\store\ExcelRepository;
 use app\common\repositories\store\order\MerchantReconciliationRepository;
+use app\common\repositories\store\shipping\ExpressRepository;
 use crmeb\exceptions\UploadException;
 use think\App;
 use crmeb\basic\BaseController;
@@ -107,6 +108,11 @@ class Order extends BaseController
         if(!$this->repository->merDeliveryExists($id,$this->request->merId()))
             return app('json')->fail('订单信息或状态错误');
         return app('json')->success(formToData($this->repository->sendProductForm($id)));
+    }
+
+    public function getOptions()
+    {
+        return app('json')->success("success", app()->make(ExpressRepository::class)->options());
     }
 
     /**
