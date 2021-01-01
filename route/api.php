@@ -242,7 +242,7 @@ Route::group('api/', function () {
     })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
 
     Route::group("store/order", function(){
-        Route::get('lst', 'merchant.store.order.Order/lst'); // 我发布的
+        Route::get('my/lst', 'merchant.store.order.Order/lst'); // 我发布的
         Route::post('delivery/:id', 'merchant.store.order.Order/delivery'); //发货信息
     })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
 
