@@ -1163,7 +1163,25 @@ class ProductRepository extends BaseRepository
         $where = array_merge($where, $this->switchType(1, $merId, 0), $this->dao->productShow());
         $query = $this->dao->search($merId, $where);
         $count = $query->count($this->dao->getPk());
-        $list = $query->page($page, $limit)->setOption('field', [])->with(['issetCoupon', 'merchant'])->field('mer_id,product_id,cate_id,image,store_name,sort,sales,price,create_time')->select();
+        $list = $query->page($page, $limit)->setOption('field', [])->field($this->filed)->with(['issetCoupon', 'merchant', 'userMer', 'merCateId'])->select();
+
+        $list = $list->each(function ($item) {
+//            $item['max_extension'] = $item->max_extension;
+            $item['province_name'] = AddressUtils::getAddressName($item['province']);
+            $item['city_name'] = AddressUtils::getAddressName($item['city']);
+            $item['merchant']['credit'] = $item['userMer']['credit'];
+            $mer_cate_id= [];
+            $mer_cate_name = [];
+            foreach ($item['merCateId'] as $cate){
+                $mer_cate_id[] = $cate->mer_cate_id;
+                $mer_cate_name[] = CateUtils::getAddressName($cate->mer_cate_id);
+            }
+            $item['mer_cate_id'] = $mer_cate_id;
+            $item['mer_cate_name'] = $mer_cate_name;
+            unset($item['merCateId']);
+            unset($item['userMer']);
+            return $item;
+        });
 
         return compact('count', 'list');
     }
