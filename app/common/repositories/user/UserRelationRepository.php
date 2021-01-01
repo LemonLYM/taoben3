@@ -10,7 +10,9 @@
 
 namespace app\common\repositories\user;
 
+use app\common\dao\store\product\ProductDao;
 use app\common\dao\user\UserRelationDao as dao;
+use app\common\model\store\product\Product;
 use app\common\repositories\BaseRepository;
 use app\common\repositories\store\product\ProductRepository;
 use app\common\repositories\system\merchant\MerchantRepository;
@@ -77,21 +79,33 @@ class UserRelationRepository extends BaseRepository
        $query = $this->dao->search($where);
        switch ($where['type'])
        {
-           case 1: //商品
-               $query->with(['product' => function($query){
-                   $query->field('product_id,image,store_name,price,is_show,status,care_count');
-               }]);
-               break;
-           case 10: //商铺
-               $query->with(['merchant'=> function($query){
-                   $query->field('mer_id,mer_avatar,mer_name,product_score,service_score,postage_score,status,care_count,is_trader');
-               }]);;
-               break;
-           default:return false;break;
+//           case 1: //商品
+//               $query->with(['product' => function($query){
+//                   $query->field('product_id,image,store_name,price,is_show,status,care_count');
+//               }]);
+//               break;
+//           case 10: //商铺
+//               $query->with(['merchant'=> function($query){
+//                   $query->field('mer_id,mer_avatar,mer_name,product_score,service_score,postage_score,status,care_count,is_trader');
+//               }]);;
+//               break;
+//           default:return false;break;
        }
-        $count = $query->count($this->dao->getPk());
-        $list = $query->page($page, $limit)->select();
-        return compact('count', 'list');
+
+        if($where['type'] == 1){
+            $list = $query->count();
+            $pids = array_column($query->page($page, $limit)->select()->toArray(), 'type_id');
+            list($count, $data) = app()->make(ProductRepository::class)->getByIds( $pids, $page, $limit);
+        }elseif($where['type'] == 10){
+            $mer_ids = array_column($query->select()->toArray(), 'type_id');
+            $pQuery = Product::where('mer_id', 'in', $mer_ids)->where((new ProductDao())->productShow());
+            $list = $pQuery->count();
+            $pids = array_column($query->page($page, $limit)->select()->toArray(), 'product_id');
+            list($count, $data) = app()->make(ProductRepository::class)->getByIds( $pids, $page, $limit);
+        }
+
+
+        return compact('list', 'data');
     }
 
 

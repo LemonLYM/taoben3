@@ -862,6 +862,45 @@ class ProductRepository extends BaseRepository
     }
 
     /**
+     * @Author:Qinii
+     * @Date: 2020/5/28
+     * @param array $where
+     * @param int $page
+     * @param int $limit
+     * @param $userInfo
+     * @return array
+     */
+    public function getByIds(array $ids)
+    {
+
+        $query = Product::where('product_id','in' , $ids);
+        $count = $query->count();
+
+//        dump($count);
+        $list = $query->setOption('field', [])->field($this->filed)->with(['merchant', 'issetCoupon', 'userMer', 'merCateId'])->select();
+        //
+        $list = $list->each(function ($item) {
+//            $item['max_extension'] = $item->max_extension;
+            $item['province_name'] = AddressUtils::getAddressName($item['province']);
+            $item['city_name'] = AddressUtils::getAddressName($item['city']);
+            $item['merchant']['credit'] = $item['userMer']['credit'];
+            $mer_cate_id= [];
+            $mer_cate_name = [];
+            foreach ($item['merCateId'] as $cate){
+                $mer_cate_id[] = $cate->mer_cate_id;
+                $mer_cate_name[] = CateUtils::getAddressName($cate->mer_cate_id);
+            }
+            $item['mer_cate_id'] = $mer_cate_id;
+            $item['mer_cate_name'] = $mer_cate_name;
+            unset($item['merCateId']);
+            unset($item['userMer']);
+            return $item;
+        });
+//        dump($list);
+        return [$count, $list];
+    }
+
+    /**
      * TODO 秒杀列表
      * @param array $where
      * @param int $page
