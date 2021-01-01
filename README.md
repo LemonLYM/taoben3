@@ -634,7 +634,7 @@ username| 否| string | 用户筛选. 不知道干嘛的先不用.
 
 ### 发货接口
 
-请求方式: `post` 路由:  `/api/store/order/delivery`
+请求方式: `post` 路由:  `/api/store/order/delivery/{oid}`
 
 #### 请求参数
 参数名 | 是否必须 | 类型 | 描述 | 长度
