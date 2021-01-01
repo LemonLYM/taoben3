@@ -692,6 +692,9 @@ data[n].value|int| 物流公司id|
 
 请求方式: `get` 接口: `api/user/relation/product/lst`
 
+### 推荐列表
+请求方式: `get` 接口: `api/store/product/recommend/ls`
+
 #### 请求参数
 
  参数名  | 类型 | 描述 | 长度
