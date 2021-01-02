@@ -13,6 +13,7 @@ use app\common\repositories\system\merchant\MerchantCategoryRepository;
 use app\common\repositories\system\merchant\MerchantRepository;
 use app\common\repositories\user\UserCaRepository;
 use app\common\repositories\user\UserMerRepository;
+use app\common\repositories\user\UserRepository;
 use crmeb\exceptions\AuthException;
 use crmeb\services\YunxinSmsService;
 use think\App;
