@@ -203,9 +203,9 @@
             </el-table-column>
             <el-table-column label="状态" min-width="100">
                 <template slot-scope="{row}">
-                    <el-tag v-if="row.status == 1" type="success">通过</el-tag>
-                    <el-tag v-if="row.status == 0" type="info">未处理</el-tag>
-                    <el-tag v-if="row.status == 2" type="warning">未通过</el-tag>
+                    <el-tag v-if="row.user_ca == 1" type="success">通过</el-tag>
+                    <el-tag v-if="row.user_ca == 0" type="info">未处理</el-tag>
+                    <el-tag v-if="row.user_ca == 2" type="warning">未通过</el-tag>
                 </template>
             </el-table-column>
             <el-table-column label="推荐人" min-width="140">
