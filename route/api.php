@@ -11,6 +11,8 @@
 use app\common\middleware\AllowOriginMiddleware;
 use app\common\middleware\CheckSiteOpenMiddleware;
 use app\common\middleware\InstallMiddleware;
+use app\common\middleware\MerchantTokenMiddleware;
+use app\common\middleware\UserMerMiddleware;
 use app\common\middleware\UserTokenMiddleware;
 use app\common\middleware\VisitProductMiddleware;
 use think\facade\Route;
@@ -229,6 +231,25 @@ Route::group('api/', function () {
         Route::post('common/visit', 'api.Common/visit');
 
     })->middleware(UserTokenMiddleware::class, false);
+
+    //商户接口
+    Route::group('store/product', function(){
+        Route::post('createByUser', 'merchant.store.product.Product/createByUser')->name('merchantStoreProductCreateByUser');
+        Route::post('updateByUser/:id', 'merchant.store.product.Product/updateByUser')->name('merchantStoreProductUpdate');
+        Route::post('FromByUser/:id', 'merchant.store.product.Product/FromByUser')->name('merchantStoreProductUpdate');
+        Route::post('status/:id', 'merchant.store.product.Product/switchStatus')->name('merchantStoreProductSwitchStatus');
+        Route::get('my/lst', 'merchant.store.product.Product/myLst'); // 我发布的
+    })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
+
+    Route::group("store/order", function(){
+        Route::get('my/lst', 'merchant.store.order.Order/lst'); // 我发布的
+        Route::post('delivery/:id', 'merchant.store.order.Order/delivery'); //发货信息
+    })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
+
+
+    //快递公司信息
+    Route::any('order/delivery/getOptions', 'merchant.store.order.Order/getOptions')->name('wechatNotify');
+
 
     //微信支付回调
     Route::any('notice/wechat_pay', 'api.Common/wechatNotify')->name('wechatNotify');

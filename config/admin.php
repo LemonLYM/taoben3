@@ -14,7 +14,7 @@ return [
     //token超时多久可自动续期(后台)
     'token_valid_exp' => 15, //15分钟
     //token超时多久可自动续期(用户)
-    'user_token_valid_exp' => 60 * 24 * 7, //7天
+    'user_token_valid_exp' => 1, //7天
     //登录验证码有效期
     'captcha_exp' => 30, //30分钟
     'admin_prefix' => 'admin',

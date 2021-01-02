@@ -30,17 +30,6 @@ class UserMerDao extends BaseDao
     }
 
 
-    public function save($where, $data): bool
-    {
-        $db = ($this->getModel()::getDB());
-        $user = $db->where($where)->find();
-        if($user){
-            $db->where($where)->update($data);
-        }else{
-            $db->insert(array_merge($where,$data));
-        }
-        return true;
-    }
 
     public function getInfo($where)
     {

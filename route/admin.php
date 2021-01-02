@@ -144,7 +144,7 @@ Route::group(config('admin.api_admin_prefix') . '/', function () {
             Route::delete('delete/:id', '/delete')->name('systemMerchantMenuDelete')->append(['merchant' => 1]);
         })->prefix('admin.system.auth.Menu');
 
-        //申请列表
+        //商户申请列表
         Route::group('merchant/intention', function () {
             Route::get('lst', '/lst')->name('systemMerchantIntentionLst');
             Route::post('status/:id', '/switchStatus')->name('systemMerchantIntentionStatus');
@@ -155,6 +155,18 @@ Route::group(config('admin.api_admin_prefix') . '/', function () {
             Route::post('agree', '/saveAgree')->name('systemMerchantIntentionSaveAgree');
             Route::get('agree', '/getAgree')->name('systemMerchantIntentionGetAgree');
         })->prefix('admin.system.merchant.MerchantIntention');
+
+        //用户认证列表
+        Route::group('user/intention', function () {
+            Route::get('lst', '/lst')->name('systemUserIntentionLst');
+            Route::post('status/:uid', '/switchStatus')->name('systemUserIntentionStatus');
+            Route::delete('delete/:id', '/delete')->name('systemUserIntentionDelete');
+            Route::get('mark/:id/form', '/form')->name('systemUserIntentionMarkForm');
+            Route::get('status/:uid/form', '/statusForm')->name('systemUserIntentionStatusForm');
+            Route::post('mark/:id', '/mark')->name('systemUserIntentionMark');
+            Route::post('agree', '/saveAgree')->name('systemUserIntentionSaveAgree');
+            Route::get('agree', '/getAgree')->name('systemUserIntentionGetAgree');
+        })->prefix('admin.system.user.UserIntention');
 
 
         //身份规则

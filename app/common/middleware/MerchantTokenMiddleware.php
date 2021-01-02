@@ -44,29 +44,18 @@ class MerchantTokenMiddleware extends BaseMiddleware
 
             /**
              * @var MerchantAdminRepository $repository
-             * @var UserRepository $userRepository
              */
             $repository = app()->make(MerchantAdminRepository::class);
-            $userRepository = app()->make(UserRepository::class);
             $service = new JwtTokenService();
             try {
                 $payload = $service->parseToken($token);
             } catch (ExpiredException $e) {
-                try{
-                    $repository->checkToken($token);
-                }catch (AuthException $e){
-                    $userRepository->checkToken($token);
-                }
                 $payload = $service->decode($token);
             } catch (Throwable $e) {//Token 过期
                 throw new AuthException('token 已过期');
             }
 
-
-            if ('user' == $payload->jti[1]){
-                $mer_id = app()->make(UserMerRepository::class)->getMeridByUserid($payload->jti[0]);
-                $admin = $repository->getByMerId($mer_id);
-            }else if ('mer' == $payload->jti[1]){
+            if ('mer' == $payload->jti[1]){
                 $admin = $repository->get($payload->jti[0]);
             }else{
                 throw new AuthException('无效的 token');

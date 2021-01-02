@@ -7,6 +7,7 @@
 namespace app\controller\merchant\store\product;
 
 use app\common\repositories\store\order\StoreCartRepository;
+use crmeb\exceptions\AuthException;
 use think\App;
 use crmeb\basic\BaseController;
 use app\validate\merchant\StoreProductValidate as validate;
@@ -84,10 +85,24 @@ class Product extends BaseController
         $merchant = $this->request->merchant();
         $data = $this->checkParams($validate);
         $data['mer_id'] = $this->request->merId();
-        $data['status'] = $this->request->merchant()->is_audit ? 0 : 1;
+        $data['is_show'] = $this->request->merchant()->is_audit ? 0 : 1;
         $data['mer_status'] = ($merchant['is_del'] || !$merchant['mer_state'] || !$merchant['status']) ? 0 : 1;
         $this->repository->createByUser($data,0);
         return app('json')->success('添加成功');
+    }
+
+    /**
+     * @Author:Qinii
+     * @Date: 2020/5/18
+     * @param validate $validate
+     * @return mixed
+     */
+    public function FromByUser($id)
+    {
+        $merchant = $this->request->merchant();
+        $product = $this->repository->getByUser($id);
+
+        return app('json')->success("success", $product);
     }
 
     /**
@@ -113,6 +128,31 @@ class Product extends BaseController
         $data['mer_status'] = ($merchant['is_del'] || !$merchant['mer_state'] || !$merchant['status']) ? 0 : 1;
         unset($data['is_gift_bag']);
         $this->repository->edit($id,$data,$this->request->merId(),0);
+        return app('json')->success('编辑成功');
+    }
+
+    /**
+     * @Author:Qinii
+     * @Date: 2020/5/18
+     * @param $id
+     * @param validate $validate
+     * @return mixed
+     */
+    public function updateByUser($id,validate $validate)
+    {
+        $merchant = $this->request->merchant();
+        $data = $this->checkParams($validate);
+        if(!$this->repository->merExists($this->request->merId(),$id))
+            return app('json')->fail('数据不存在');
+        $pro = $this->repository->getWhere(['product_id' => $id]);
+        if($pro->status == -2){
+            $data['status'] = 0;
+        }else{
+            $data['status'] = $this->request->merchant()->is_audit ? 0 : 1;
+        }
+        $data['mer_status'] = ($merchant['is_del'] || !$merchant['mer_state'] || !$merchant['status']) ? 0 : 1;
+        unset($data['is_gift_bag']);
+        $this->repository->editByUser($id,$data,$this->request->merId(),0);
         return app('json')->success('编辑成功');
     }
 
@@ -179,7 +219,8 @@ class Product extends BaseController
         $params = [
             "image", "slider_image", "store_name", "store_info", "keyword", "bar_code", "brand_id",
             "cate_id", "mer_cate_id", "unit_name", "sort" , "is_show", "is_good",'is_gift_bag',
-            "video_link", "temp_id", "content", "spec_type","extension_type", "attr", "attrValue",['give_coupon_ids',[]], "price", "cost", "new_percentage"
+            "video_link", "temp_id", "content", "spec_type","extension_type", "attr", "attrValue",
+            ['give_coupon_ids',[]], "price", "cost", "new_percentage", "province", "city","postage","stock"
         ];
         $data = $this->request->params($params);
         $validate->check($data);
@@ -212,5 +253,26 @@ class Product extends BaseController
             return app('json')->fail('只能删除回收站的商品');
         $this->repository->restore($id);
         return app('json')->success('商品已恢复');
+    }
+
+
+
+
+    /**
+     * 我发布的
+     * @Author:Qinii
+     * @Date: 2020/5/28
+     * @return mixede
+     */
+    public function myLst()
+    {
+        [$page, $limit] = $this->getPage();
+        $where = $this->request->params(['keyword', 'cate_id', 'order']);
+        $merid = $this->request->merchantId();
+        if(!$merid)
+            throw new AuthException('不是商户');
+
+        $this->repository->addFiled("status, is_show");
+        return app('json')->success($this->repository->getApiSearch($merid, $where, $page, $limit, $this->request->userInfo(), true));
     }
 }

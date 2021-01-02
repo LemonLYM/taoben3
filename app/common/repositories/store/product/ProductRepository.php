@@ -21,6 +21,8 @@ use app\common\repositories\user\UserRelationRepository;
 use app\common\repositories\user\UserVisitRepository;
 use app\common\repositories\wechat\RoutineQrcodeRepository;
 use app\common\repositories\wechat\WechatQrcodeRepository;
+use app\utils\AddressUtils;
+use app\utils\CateUtils;
 use crmeb\services\DownloadImageService;
 use crmeb\services\QrcodeService;
 use crmeb\services\SwooleTaskService;
@@ -44,7 +46,7 @@ class ProductRepository extends BaseRepository
 {
 
     protected $dao;
-    protected $filed = 'product_id,mer_id,brand_id,unit_name,mer_status,rate,reply_count,store_info,cate_id,image,slider_image,store_name,keyword,sort,rank,is_show,sales,price,extension_type,refusal,cost,ot_price,stock,is_gift_bag,care_count,status,is_used,create_time';
+    protected $filed = 'product_id,mer_id,brand_id,unit_name,mer_status,rate,reply_count,store_info,cate_id,image,slider_image,store_name,keyword,sort,rank,is_show,sales,price,extension_type,refusal,cost,ot_price,stock,is_gift_bag,care_count,status,is_used,create_time,province,city';
 
     /**
      * ProductRepository constructor.
@@ -53,6 +55,14 @@ class ProductRepository extends BaseRepository
     public function __construct(dao $dao)
     {
         $this->dao = $dao;
+    }
+
+    public function setFiled($filed){
+        $this->filed = $filed;
+    }
+
+    public function addFiled($filed){
+        $this->filed .= "," . trim($filed,",");
     }
 
     /**
@@ -187,11 +197,6 @@ class ProductRepository extends BaseRepository
             $settleParams['cate'] = $this->setMerCate($data['mer_cate_id'], $result->product_id, $data['mer_id']);
             $settleParams['attr'] = $this->setAttr($data['attr'], $result->product_id);
             $this->save($result->product_id, $settleParams, $data['content']);
-            if ($productType == 1) { //秒杀商品
-                $dat = $this->setSeckillProduct($data);
-                $dat['product_id'] = $result->product_id;
-                app()->make(StoreSeckillActiveRepository::class)->create($dat);
-            }
             return $result->product_id;
         });
     }
@@ -214,6 +219,24 @@ class ProductRepository extends BaseRepository
                 $dat = $this->setSeckillProduct($data);
                 app()->make(StoreSeckillActiveRepository::class)->updateByProduct($id, $dat);
             }
+        });
+    }
+
+    /**
+     * @Author:Qinii
+     * @Date: 2020/5/11
+     * @param int $id
+     * @param array $data
+     */
+    public function editByUser(int $id, array $data, int $merId, int $productType)
+    {
+        Db::transaction(function () use ($id, $data, $merId, $productType) {
+
+            $product = $this->setProduct($data);
+            $settleParams = $this->setAttrValueByUser($data, $id, $productType, 1);
+            $settleParams['cate'] = $this->setMerCate($data['mer_cate_id'], $id, $merId);
+            $settleParams['attr'] = $this->setAttr($data['attr'], $id);
+            $this->save($id, $settleParams, $data['content'], $product);
         });
     }
 
@@ -335,10 +358,13 @@ class ProductRepository extends BaseRepository
             'temp_id' => $data['temp_id'],
             'extension_type' => $data['extension_type'],
             'spec_type' => $data['spec_type'],
-            'status' => $data['status'],
+            'status' => 0,
             'give_coupon_ids' => $give_coupon_ids,
             'mer_status' => $data['mer_status'],
             'new_percentage' => $data['new_percentage'],
+            'province' => $data['province'],
+            'city' => $data['city'],
+            "postage" => $data['postage'],
         ];
         if (isset($data['is_gift_bag'])) $result['is_gift_bag'] = $data['is_gift_bag'];
         if (isset($data['mer_id'])) $result['mer_id'] = $data['mer_id'];
@@ -422,7 +448,7 @@ class ProductRepository extends BaseRepository
                 "price" => $value['price'] ? (($value['price'] < 0) ? 0 : $value['price']) : 0,
                 "volume" => $value['volume'] ? (($value['volume'] < 0) ? 0 : $value['volume']) : 0,
                 "weight" => $value['weight'] ? (($value['weight'] < 0) ? 0 : $value['weight']) : 0,
-                "stock" => $value['stock'] ? (($value['stock'] < 0) ? 0 : $value['stock']) : 0,
+                "stock" => $value['stock'] ? (($value['stock'] < 0) ? 0 : $value['stock']) : 1,
                 "ot_price" => $value['ot_price'] ? (($value['ot_price'] < 0) ? 0 : $value['ot_price']) : 0,
                 "extension_one" => $extension_status ? ($value['extension_one'] ?? 0) : 0,
                 "extension_two" => $extension_status ? ($value['extension_two'] ?? 0) : 0,
@@ -555,6 +581,51 @@ class ProductRepository extends BaseRepository
         $content = $data['content']['content'];
         unset($data['content']);
         $data['content'] = $content;
+        return $data;
+    }
+
+    /**
+     * admin 获取商品详情
+     * @Author:Qinii
+     * @Date: 2020/5/18
+     * @param $pid
+     * @return array
+     */
+    public function getByUser($pid)
+    {
+        $with = ['attr', 'content', 'merCateId'];
+
+        $field = ["product_id", "image", "slider_image", 'store_name', 'store_info',
+            'keyword', 'price', 'new_percentage', 'cost', 'province', 'city', 'stock',
+            'postage', "content", "attr","mer_cate_id",'mer_cate_name', "province_name", "city_name"];
+        $data = $this->dao->getWhere(['product_id' => $pid], '*', $with)->append(['seckill_status']);
+        $where = [['coupon_id', 'in', $data['give_coupon_ids']]];
+        $data['coupon'] = app()->make(StoreCouponRepository::class)->selectWhere($where, 'coupon_id,title')->toArray();
+        $arr = [];
+        $arrName = [];
+        if (isset($data['merCateId'])) {
+            foreach ($data['merCateId'] as $i) {
+                $arr[] = $i['mer_cate_id'];
+                $arrName[] = CateUtils::getAddressName($i['mer_cate_id']);
+            }
+        }
+        unset($data['merCateId']);
+        $data['mer_cate_id'] = $arr;
+        $data['mer_cate_name'] = $arrName;
+        foreach ($data['attr'] as $k => $v) {
+            $data['attr'][$k] = [
+                'value' => $v['attr_name'],
+                'detail' => $v['attr_values']
+            ];
+        }
+        $content = $data['content']['content'];
+        unset($data['content']);
+        $data['content'] = $content;
+        $data['province_name'] = AddressUtils::getAddressName($data['province']);;
+        $data['city_name'] = AddressUtils::getAddressName($data['city']);;
+
+        $data->visible($field);
+
         return $data;
     }
 
@@ -753,22 +824,80 @@ class ProductRepository extends BaseRepository
      * @param $userInfo
      * @return array
      */
-    public function getApiSearch($merId, array $where, int $page, int $limit, $userInfo)
+    public function getApiSearch($merId, array $where, int $page, int $limit, $userInfo, $all = false)
     {
         if (isset($where['price_on']) && $where['price_on'] !== '') $where['price'] = [$where['price_on'], $where['price_off']];
         unset($where['price_on'], $where['price_off']);
-        $where = array_merge($where, $this->dao->productShow());
+        if(!$all){
+            // 只显示正常售卖的.
+            $where = array_merge($where, $this->dao->productShow());
+        }
+
         //搜索记录
         if ($userInfo && isset($where['keyword']) && !empty($where['keyword']))
             app()->make(UserVisitRepository::class)->searchProduct($userInfo['uid'], $where['keyword']);
 
         $query = $this->dao->search($merId, $where);
         $count = $query->count($this->dao->getPk());
-        $list = $query->page($page, $limit)->setOption('field', [])->field($this->filed)->with(['merchant', 'issetCoupon'])->select();
-        if ($this->getUserIsPromoter($userInfo)) $list = $list->each(function ($item) {
-            return $item['max_extension'] = $item->max_extension;
+        $list = $query->page($page, $limit)->setOption('field', [])->field($this->filed)->with(['merchant', 'issetCoupon', 'userMer', 'merCateId'])->select();
+        //
+        $list = $list->each(function ($item) {
+//            $item['max_extension'] = $item->max_extension;
+            $item['province_name'] = AddressUtils::getAddressName($item['province']);
+            $item['city_name'] = AddressUtils::getAddressName($item['city']);
+            $item['merchant']['credit'] = $item['userMer']['credit'];
+            $mer_cate_id= [];
+            $mer_cate_name = [];
+            foreach ($item['merCateId'] as $cate){
+                $mer_cate_id[] = $cate->mer_cate_id;
+                $mer_cate_name[] = CateUtils::getAddressName($cate->mer_cate_id);
+            }
+            $item['mer_cate_id'] = $mer_cate_id;
+            $item['mer_cate_name'] = $mer_cate_name;
+            unset($item['merCateId']);
+            unset($item['userMer']);
+            return $item;
         });
         return compact('count', 'list');
+    }
+
+    /**
+     * @Author:Qinii
+     * @Date: 2020/5/28
+     * @param array $where
+     * @param int $page
+     * @param int $limit
+     * @param $userInfo
+     * @return array
+     */
+    public function getByIds(array $ids)
+    {
+
+        $query = Product::where('product_id','in' , $ids);
+        $count = $query->count();
+
+//        dump($count);
+        $list = $query->setOption('field', [])->field($this->filed)->with(['merchant', 'issetCoupon', 'userMer', 'merCateId'])->select();
+        //
+        $list = $list->each(function ($item) {
+//            $item['max_extension'] = $item->max_extension;
+            $item['province_name'] = AddressUtils::getAddressName($item['province']);
+            $item['city_name'] = AddressUtils::getAddressName($item['city']);
+            $item['merchant']['credit'] = $item['userMer']['credit'];
+            $mer_cate_id= [];
+            $mer_cate_name = [];
+            foreach ($item['merCateId'] as $cate){
+                $mer_cate_id[] = $cate->mer_cate_id;
+                $mer_cate_name[] = CateUtils::getAddressName($cate->mer_cate_id);
+            }
+            $item['mer_cate_id'] = $mer_cate_id;
+            $item['mer_cate_name'] = $mer_cate_name;
+            unset($item['merCateId']);
+            unset($item['userMer']);
+            return $item;
+        });
+//        dump($list);
+        return [$count, $list];
     }
 
     /**
@@ -930,10 +1059,10 @@ class ProductRepository extends BaseRepository
             if ($productType) {
                 $sku[$value['sku']]['stock'] = $value['stock'] - $make->seckillSkuOrderCounut($value['unique']); //获取sku的销量
             }
-            if ($this->getUserIsPromoter($userInfo)) {
-                $sku[$value['sku']]['extension_one'] = $value->bc_extension_one;
-                $sku[$value['sku']]['extension_two'] = $value->bc_extension_two;
-            }
+//            if ($this->getUserIsPromoter($userInfo)) {
+//                $sku[$value['sku']]['extension_one'] = $value->bc_extension_one;
+//                $sku[$value['sku']]['extension_two'] = $value->bc_extension_two;
+//            }
 
         }
         return $sku;
@@ -1034,7 +1163,25 @@ class ProductRepository extends BaseRepository
         $where = array_merge($where, $this->switchType(1, $merId, 0), $this->dao->productShow());
         $query = $this->dao->search($merId, $where);
         $count = $query->count($this->dao->getPk());
-        $list = $query->page($page, $limit)->setOption('field', [])->with(['issetCoupon', 'merchant'])->field('mer_id,product_id,cate_id,image,store_name,sort,sales,price,create_time')->select();
+        $list = $query->page($page, $limit)->setOption('field', [])->field($this->filed)->with(['issetCoupon', 'merchant', 'userMer', 'merCateId'])->select();
+
+        $list = $list->each(function ($item) {
+//            $item['max_extension'] = $item->max_extension;
+            $item['province_name'] = AddressUtils::getAddressName($item['province']);
+            $item['city_name'] = AddressUtils::getAddressName($item['city']);
+            $item['merchant']['credit'] = $item['userMer']['credit'];
+            $mer_cate_id= [];
+            $mer_cate_name = [];
+            foreach ($item['merCateId'] as $cate){
+                $mer_cate_id[] = $cate->mer_cate_id;
+                $mer_cate_name[] = CateUtils::getAddressName($cate->mer_cate_id);
+            }
+            $item['mer_cate_id'] = $mer_cate_id;
+            $item['mer_cate_name'] = $mer_cate_name;
+            unset($item['merCateId']);
+            unset($item['userMer']);
+            return $item;
+        });
 
         return compact('count', 'list');
     }
