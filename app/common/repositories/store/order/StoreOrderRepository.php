@@ -698,8 +698,8 @@ class StoreOrderRepository extends BaseRepository
                     $product_cart[$cart['product_id']][] = $cart['cart_id'];
                 if (!$address || !$cart['product']['temp']) {
                     $cartInfo['list'][$_k]['undelivered'] = true;
-                    $noDeliver = true;
-                    continue;
+//                    $noDeliver = true;
+//                    continue;
                 }
                 $temp1 = $cart['product']['temp'];
                 $cart['undelivered'] = $temp1['undelivery'] && isset($temp1['undelives']);
@@ -709,8 +709,8 @@ class StoreOrderRepository extends BaseRepository
                 $cartInfo['list'][$_k] = $cart;
 
                 if ($cart['undelivered']) {
-                    $noDeliver = true;
-                    continue;
+//                    $noDeliver = true;
+//                    continue;
                 }
 
                 if (!isset($postageRule[$cart['product']['temp_id']])) {
