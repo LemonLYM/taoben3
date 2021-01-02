@@ -11,6 +11,8 @@
 namespace app\controller\api\user;
 
 
+use app\common\repositories\user\UserCaRepository;
+use app\common\repositories\user\UserMerRepository;
 use crmeb\basic\BaseController;
 use app\common\repositories\store\order\StoreOrderRepository;
 use app\common\repositories\user\UserBillRepository;
@@ -119,15 +121,24 @@ class User extends BaseController
      */
     public function binding()
     {
-        $data = $this->request->params(['phone', 'sms_code']);
-        if (!$data['sms_code'] || !(YunxinSmsService::create())->checkSmsCode($data['phone'], $data['sms_code'],'binding')) return app('json')->fail('验证码不正确');
+        $data = $this->request->params(['phone', 'sms_code', 'idCardImages']);
+        $idCardImages = $data['idCardImages'];
+//        if (!$data['sms_code'] || !(YunxinSmsService::create())->checkSmsCode($data['phone'], $data['sms_code'],'binding')) return app('json')->fail('验证码不正确');
         $user = $this->repository->accountByUser($data['phone']);
         if ($user) {
             $data = ['phone' => $data['phone']];
         } else {
             $data = ['account' => $data['phone'], 'phone' => $data['phone']];
         }
-        $this->repository->update($this->request->uid(), $data);
+
+        $uid = $this->request->uid();
+        //创建审核
+        if($idCardImages){
+            app()->make(UserCaRepository::class)->userSave($uid, $idCardImages);
+            $data['user_ca'] = 0;
+        }
+
+        $this->repository->update($uid, $data);
         return app('json')->success('绑定成功');
     }
 
