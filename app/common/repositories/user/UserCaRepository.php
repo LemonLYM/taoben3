@@ -115,4 +115,19 @@ class UserCaRepository extends BaseRepository
 
         return $caInfo;
     }
+
+
+    public function statusForm($id, $item = [])
+    {
+        $form = Elm::createForm(Route::buildUrl('systemUserIntentionStatus', ['uid' => $id])->build());
+        $rule = array_merge($item, [
+            Elm::input("msg","提示", "", "text"),
+            Elm::select('status', '审核状态', 1)->options([
+                ['value' => 1, 'label' => '同意'],
+                ['value' => 2, 'label' => '拒绝'],
+            ]),
+        ]);
+        $form->setRule($rule);
+        return $form->setTitle('修改审核状态');
+    }
 }
