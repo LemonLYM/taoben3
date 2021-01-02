@@ -45,7 +45,8 @@
         "gregwar/captcha": "^1.1",
         "guzzle/guzzle": "~3.7",
         "endroid/qr-code": "^3.8",
-        "phpoffice/phpspreadsheet": "^1.14"
+        "phpoffice/phpspreadsheet": "^1.14",
+        "alibabacloud/client": "^1.5"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",
