@@ -123,7 +123,7 @@ class User extends BaseController
     {
         $data = $this->request->params(['phone', 'sms_code', 'idCardImages']);
         $idCardImages = $data['idCardImages'];
-//        if (!$data['sms_code'] || !(YunxinSmsService::create())->checkSmsCode($data['phone'], $data['sms_code'],'binding')) return app('json')->fail('验证码不正确');
+        if (!$data['sms_code'] || !(YunxinSmsService::create())->checkSmsCode($data['phone'], $data['sms_code'],'binding')) return app('json')->fail('验证码不正确');
         $user = $this->repository->accountByUser($data['phone']);
         if ($user) {
             $data = ['phone' => $data['phone']];
