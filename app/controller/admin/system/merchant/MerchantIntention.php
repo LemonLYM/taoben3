@@ -11,6 +11,7 @@
 namespace app\controller\admin\system\merchant;
 
 use app\common\repositories\system\CacheRepository;
+use app\common\repositories\system\merchant\MerchantRepository;
 use app\common\repositories\user\UserCaRepository;
 use app\common\repositories\user\UserMerRepository;
 use app\common\repositories\user\UserRepository;
@@ -94,6 +95,7 @@ class MerchantIntention extends BaseController
             app()->make(UserRepository::class)->updateUserInfo($uid, ["mer_ca"=> 1]);
             $this->userMerRepository->save(["uid"=>$uid, "mer_id"=>$mer_id], ["status" => 1, "mer_state" => 1]);
             // TODO 设置商户密码?
+            app()->make(MerchantRepository::class)->save(['mer_id'=> $mer_id], ['status' => 1]);
         }
         return app('json')->success('修改成功');
     }

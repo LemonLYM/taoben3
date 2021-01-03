@@ -62,6 +62,7 @@ class MerchantIntention extends BaseController
                 'mer_address' =>"",         //商户地址
                 'mark' =>"",        //备注
                 'status' =>"",          //开启状态
+                'mer_avatar' => $this->userInfo->avatar,
                 'commission_rate' =>"",         //提成比例
             ];
             $caData = array_merge($data["idCardImages"], [$data["images"][0]]);

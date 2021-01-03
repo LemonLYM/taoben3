@@ -11,6 +11,8 @@
 namespace app\controller\api;
 
 
+use app\common\model\system\merchant\Merchant;
+use app\common\model\user\UserMer;
 use app\common\repositories\user\UserCaRepository;
 use app\common\repositories\user\UserRepository;
 use app\common\repositories\wechat\RoutineQrcodeRepository;
@@ -92,6 +94,13 @@ class Auth extends BaseController
         $idCardImages = $this->request->param('idCardImages');
         $repository->updateUserInfo($uid, ["avatar" => $avatar, 'nickname' => $nickName]);
         $userCa->userSave($uid, $idCardImages);
+
+        //如果有绑定商户.
+        $userMer  = UserMer::where(['uid' =>$uid, 'status' => 1])->find();
+        if($userMer){
+            Merchant::where(['mer_id'=> $userMer->mer_id])->update(['mer_avatar' => $avatar]);
+        }
+
         return app('json')->success("success");
     }
 
