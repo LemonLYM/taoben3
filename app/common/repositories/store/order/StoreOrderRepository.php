@@ -204,7 +204,8 @@ class StoreOrderRepository extends BaseRepository
             //TODO 生成订单
 
             $_order = [
-                'commission_rate' => (float)$merchantRepository->get($cartInfo['mer_id'])->mer_commission_rate,
+//                'commission_rate' => (float)$merchantRepository->get($cartInfo['mer_id'])->mer_commission_rate,
+                'commission_rate' => (float)$merchantRepository->get($cartInfo['mer_id'])->commission_rate,
                 'order_type' => in_array($cartInfo['mer_id'], $takes) == 1 ? 1 : 0,
                 'extension_one' => $total_extension_one,
                 'extension_two' => $total_extension_two,
