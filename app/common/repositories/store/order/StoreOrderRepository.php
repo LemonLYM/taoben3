@@ -14,6 +14,7 @@ namespace app\common\repositories\store\order;
 use app\common\dao\store\order\StoreOrderDao;
 use app\common\model\store\order\StoreGroupOrder;
 use app\common\model\store\order\StoreOrder;
+use app\common\model\system\merchant\Merchant;
 use app\common\model\user\User;
 use app\common\repositories\BaseRepository;
 use app\common\repositories\store\coupon\StoreCouponRepository;
@@ -903,7 +904,10 @@ class StoreOrderRepository extends BaseRepository
      */
     public function computed(StoreOrder $order, User $user)
     {
-        $userBillRepository = app()->make(UserBillRepository::class);
+//        $userBillRepository = app()->make(UserBillRepository::class);
+        $merUserId = app()->make(UserMerRepository::class)->getUseridByMerid($order->mer_id);
+        $userRepository = app()->make(UserRepository::class);
+        $mer = Merchant::find($order->mer_id);
         //TODO 添加冻结佣金
         if ($order->extension_one > 0 && $user->spread_uid) {
 //            $userBillRepository->incBill($user->spread_uid, 'brokerage', 'order_one', [
@@ -915,13 +919,8 @@ class StoreOrderRepository extends BaseRepository
 //                'balance' => 0
 //            ]);
 
-            $merUserId = app()->make(UserMerRepository::class)->getUseridByMerid($order->mer_id);
 
 
-            $userRepository = app()->make(UserRepository::class);
-
-            $userRepository->incrCredit($merUserId);
-            $userRepository->incrCredit($user->uid);
 
             $userRepository->incBrokerage($user->spread_uid, $order->extension_one);
             app()->make(FinancialRecordRepository::class)->dec([
@@ -933,7 +932,31 @@ class StoreOrderRepository extends BaseRepository
                 'number' => $order->extension_one,
             ], $order->mer_id);
         }
-        //添加积分
+
+
+        //TODO 优惠券
+        $product_price = bcsub($order->pay_price , $order->total_postage, 2);
+        $addMoney = bcadd($product_price * $mer->commission_rate ,$order->total_postage, 2);
+
+        $mark = "卖出商品, 订单号:{$order->order_id}, 获得商品售价{$product_price} * 提成比例{$mer->commission_rate} + 邮费{$order->total_postage}= {$addMoney} ";
+        app()->make(UserBillRepository::class)->incBill($user->uid, 'now_money', 'recharge', [
+            'link_id' => $order->order_id,
+            'status' => 1,
+            'title' => '卖出商品',
+            'number' => $product_price * $mer->commission_rate + $order->pay_price,
+            'mark' => $mark,
+            'balance' => $user->now_money
+        ]);
+
+        $user->now_money = bcadd($user->now_money, $addMoney, 2);
+        $user->save();
+
+
+        if($product_price >= 100){
+            // 出售商品价格超过100 加积分.添加积分
+            $userRepository->incrCredit($merUserId);
+//           $userRepository->incrCredit($user->uid);
+        }
 
 
 //        if ($order->extension_two > 0 && $user->top_uid) {
