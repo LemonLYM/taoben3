@@ -151,6 +151,8 @@ class Product extends BaseController
             $data['status'] = $this->request->merchant()->is_audit ? 0 : 1;
         }
         $data['mer_status'] = ($merchant['is_del'] || !$merchant['mer_state'] || !$merchant['status']) ? 0 : 1;
+        //默认是上架状态.
+        $data['is_show'] = 1;
         unset($data['is_gift_bag']);
         $this->repository->editByUser($id,$data,$this->request->merId(),0);
         return app('json')->success('编辑成功');
