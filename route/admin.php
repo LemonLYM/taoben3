@@ -277,6 +277,9 @@ Route::group(config('admin.api_admin_prefix') . '/', function () {
             //修改用户余额
             Route::get('change_now_money/form/:id', '/changeNowMoneyForm')->name('systemUserChangeNowMoneyForm');
             Route::post('change_now_money/:id', '/changeNowMoney')->name('systemUserChangeNowMoney');
+            //修改用户信誉值
+            Route::get('change_credit/form/:id', '/changeCreditForm')->name('systemUserChangeCredit');
+            Route::post('change_credit/:id', '/changeCredit')->name('systemUserChangeCredit');
             //微信图文群发
             Route::post('news/push', '/sendNews')->name('systemWechatUserSendNews');
 
