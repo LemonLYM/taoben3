@@ -36,8 +36,8 @@ class MerchantIntention extends BaseController
     {
         $data = $this->request->params(['phone', 'mer_name', 'name', 'code','images','merchant_category_id',"idCardImages"]);
         $check = (YunxinSmsService::create())->checkSmsCode($data['phone'], $data['code'],'intention');
-        //if (!$check) return app('json')->fail('验证码不正确');
-//        $categ = app()->make(MerchantCategoryRepository::class)->get($data['merchant_category_id']);
+        if (!$check) return app('json')->fail('验证码不正确');
+        $categ = app()->make(MerchantCategoryRepository::class)->get($data['merchant_category_id']);
 //        if(!$categ) return app('json')->fail('商户分类不存在');
         if (!$this->userInfo){
             throw new AuthException('token过期');
