@@ -491,12 +491,12 @@ class StoreOrderRepository extends BaseRepository
                 ];
 
                 //TODO 成为推广员
-                foreach ($order->orderProduct as $product) {
-                    if ($flag && $product['cart_info']['product']['is_gift_bag']) {
-                        app()->make(UserRepository::class)->promoter($order->uid);
-                        $flag = false;
-                    }
-                }
+//                foreach ($order->orderProduct as $product) {
+//                    if ($flag && $product['cart_info']['product']['is_gift_bag']) {
+//                        app()->make(UserRepository::class)->promoter($order->uid);
+//                        $flag = false;
+//                    }
+//                }
 
                 $finance[] = [
                     'order_id' => $order->order_id,
@@ -676,7 +676,7 @@ class StoreOrderRepository extends BaseRepository
         $order_total_price = 0;
         $noDeliver = false;
         foreach ($merchantInfo as $k => $cartInfo) {
-            $postageRule = [];
+//            $postageRule = [];
             $total_price = 0;
             $total_num = 0;
             $valid_total_price = 0;
@@ -697,16 +697,17 @@ class StoreOrderRepository extends BaseRepository
                     $product_cart[$cart['product_id']] = [$cart['cart_id']];
                 else
                     $product_cart[$cart['product_id']][] = $cart['cart_id'];
-                if (!$address || !$cart['product']['temp']) {
+                if (!$address) {
                     $cartInfo['list'][$_k]['undelivered'] = true;
 //                    $noDeliver = true;
 //                    continue;
                 }
-                $temp1 = $cart['product']['temp'];
-                $cart['undelivered'] = $temp1['undelivery'] && isset($temp1['undelives']);
+//                $temp1 = $cart['product']['temp'];
+//                $cart['undelivered'] = $temp1['undelivery'] && isset($temp1['undelives']);
+                $cart['undelivered'] = false;
                 $free = $temp1['free'][0] ?? null;
                 $region = $temp1['region'][0] ?? null;
-                unset($cartInfo['list'][$_k]['product']['temp']);
+//                unset($cartInfo['list'][$_k]['product']['temp']);
                 $cartInfo['list'][$_k] = $cart;
 
                 if ($cart['undelivered']) {
@@ -714,51 +715,56 @@ class StoreOrderRepository extends BaseRepository
 //                    continue;
                 }
 
-                if (!isset($postageRule[$cart['product']['temp_id']])) {
-                    $postageRule[$cart['product']['temp_id']] = [
-                        'free' => null,
-                        'region' => null
-                    ];
-                }
-                $number = $this->productByTempNumber($cart);
-                $freeRule = $postageRule[$cart['product']['temp_id']]['free'];
-                $regionRule = $postageRule[$cart['product']['temp_id']]['region'];
-                if ($temp1['appoint'] && $free) {
-                    if (!isset($freeRule)) {
-                        $freeRule = $free;
-                        $freeRule['cart_price'] = 0;
-                        $freeRule['cart_number'] = 0;
-                    }
-                    $freeRule['cart_number'] = bcadd($freeRule['cart_number'], $number, 2);
-                    $freeRule['cart_price'] = bcadd($freeRule['cart_price'], $price, 2);
-                }
+                //新方法计算邮费.
+                $postage_price = bcadd($postage_price, $cart['cart_num']*$cart['product']['postage'], 2);
 
-                if ($region) {
-                    if (!isset($regionRule)) {
-                        $regionRule = $region;
-                        $regionRule['cart_price'] = 0;
-                        $regionRule['cart_number'] = 0;
-                    }
-                    $regionRule['cart_number'] = bcadd($regionRule['cart_number'], $number, 2);
-                    $regionRule['cart_price'] = bcadd($regionRule['cart_price'], $price, 2);
-                }
-                $postageRule[$cart['product']['temp_id']]['free'] = $freeRule;
-                $postageRule[$cart['product']['temp_id']]['region'] = $regionRule;
+//                if (!isset($postageRule[$cart['product']['temp_id']])) {
+//                    $postageRule[$cart['product']['temp_id']] = [
+//                        'free' => null,
+//                        'region' => null
+//                    ];
+//                }
+//                $number = $this->productByTempNumber($cart);
+//                $freeRule = $postageRule[$cart['product']['temp_id']]['free'];
+//                $regionRule = $postageRule[$cart['product']['temp_id']]['region'];
+//                if ($temp1['appoint'] && $free) {
+//                    if (!isset($freeRule)) {
+//                        $freeRule = $free;
+//                        $freeRule['cart_price'] = 0;
+//                        $freeRule['cart_number'] = 0;
+//                    }
+//                    $freeRule['cart_number'] = bcadd($freeRule['cart_number'], $number, 2);
+//                    $freeRule['cart_price'] = bcadd($freeRule['cart_price'], $price, 2);
+//                }
+
+//                if ($region) {
+//                    if (!isset($regionRule)) {
+//                        $regionRule = $region;
+//                        $regionRule['cart_price'] = 0;
+//                        $regionRule['cart_number'] = 0;
+//                    }
+//                    $regionRule['cart_number'] = bcadd($regionRule['cart_number'], $number, 2);
+//                    $regionRule['cart_price'] = bcadd($regionRule['cart_price'], $price, 2);
+//                }
+//                $postageRule[$cart['product']['temp_id']]['free'] = $freeRule;
+//                $postageRule[$cart['product']['temp_id']]['region'] = $regionRule;
             }
 
-            foreach ($postageRule as $item) {
-                $freeRule = $item['free'];
-                if ($freeRule && $freeRule['cart_number'] >= $freeRule['number'] && $freeRule['cart_price'] >= $freeRule['price'])
-                    continue;
-                if (!$item['region']) continue;
-                $regionRule = $item['region'];
-                $postage = bcadd($postage_price, $regionRule['first_price'], 2);
-                if ($regionRule['first'] > 0 && $regionRule['cart_number'] > $regionRule['first']) {
-                    $num = ceil(bcdiv(bcsub($regionRule['cart_number'], $regionRule['first'], 2), $regionRule['continue'], 2));
-                    $postage = bcadd($postage, bcmul($num, $regionRule['continue_price'], 2), 2);
-                }
-                $postage_price = bcadd($postage_price, $postage, 2);
-            }
+//            foreach ($postageRule as $item) {
+//                $freeRule = $item['free'];
+//                if ($freeRule && $freeRule['cart_number'] >= $freeRule['number'] && $freeRule['cart_price'] >= $freeRule['price'])
+//                    continue;
+//                if (!$item['region']) continue;
+//                $regionRule = $item['region'];
+//                $postage = bcadd($postage_price, $regionRule['first_price'], 2);
+//                if ($regionRule['first'] > 0 && $regionRule['cart_number'] > $regionRule['first']) {
+//                    $num = ceil(bcdiv(bcsub($regionRule['cart_number'], $regionRule['first'], 2), $regionRule['continue'], 2));
+//                    $postage = bcadd($postage, bcmul($num, $regionRule['continue_price'], 2), 2);
+//                }
+////                $postage_price = bcadd($postage_price, $postage, 2);
+//            }
+
+
             $coupon_price = 0;
             $use_coupon_product = [];
             $use_store_coupon = 0;
