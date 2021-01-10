@@ -121,6 +121,7 @@ Route::group('api/', function () {
             Route::get('/extract/lst', 'UserExtract/lst');
             Route::get('/extract/banklst', 'UserExtract/bankLst');
             Route::post('/extract/create', 'UserExtract/create');
+            Route::post('/extract/userCreate', 'UserExtract/userCreate');//用户提现
 
             //绑定手机号
             Route::post('binding', 'User/binding');

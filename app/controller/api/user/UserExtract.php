@@ -9,6 +9,7 @@
  */
 namespace app\controller\api\user;
 
+use app\common\model\wechat\WechatUser;
 use crmeb\basic\BaseController;
 use app\common\repositories\system\groupData\GroupDataRepository;
 use think\App;
@@ -54,6 +55,28 @@ class UserExtract extends BaseController
         if($user['brokerage_price'] < $data['extract_price'])
             return app('json')->fail('提现金额不足');
         $this->repository->create($user,$data);
+        return app('json')->success('申请已提交');
+    }
+
+    /**
+     * 用户提现, 从余额提现
+     * @param validate $validate
+     * @return mixed
+     */
+    public function userCreate(validate $validate)
+    {
+        $data = $this->request->params(['extract_price']);
+        $user = $this->request->userInfo();
+        $wxUser = WechatUser::find($user->wechat_user_id);
+        $data['openid']= $wxUser->openid;
+        $data['type'] = 3;
+        if($user['now_money'] < (systemConfig('user_extract_min')))
+            return app('json')->fail('可提现金额不足');
+        if($data['extract_price'] < (systemConfig('user_extract_min')))
+            return app('json')->fail('提现金额不得小于最低额度');
+        if($user['now_money'] < $data['extract_price'])
+            return app('json')->fail('提现金额不足');
+        $this->repository->userCreate($user,$data);
         return app('json')->success('申请已提交');
     }
 
