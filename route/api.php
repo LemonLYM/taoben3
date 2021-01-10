@@ -238,6 +238,7 @@ Route::group('api/', function () {
         Route::post('FromByUser/:id', 'merchant.store.product.Product/FromByUser')->name('merchantStoreProductUpdate');
         Route::post('status/:id', 'merchant.store.product.Product/switchStatus')->name('merchantStoreProductSwitchStatus');
         Route::get('my/lst', 'merchant.store.product.Product/myLst'); // 我发布的
+        Route::get('my/chart', 'merchant.store.product.Product/chart'); // 我发布的
     })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
 
     Route::group("store/order", function(){

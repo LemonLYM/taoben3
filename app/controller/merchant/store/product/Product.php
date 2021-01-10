@@ -7,6 +7,7 @@
 namespace app\controller\merchant\store\product;
 
 use app\common\repositories\store\order\StoreCartRepository;
+use app\common\repositories\store\order\StoreOrderRepository;
 use crmeb\exceptions\AuthException;
 use think\App;
 use crmeb\basic\BaseController;
@@ -258,7 +259,13 @@ class Product extends BaseController
     }
 
 
-
+    /**
+     * 获取
+     */
+    public function chart()
+    {
+        return app('json')->success(app()->make(StoreOrderRepository::class)->OrderTitleNumber($this->request->merId(),null));
+    }
 
     /**
      * 我发布的
