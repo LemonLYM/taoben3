@@ -61,6 +61,8 @@ class SmsPay extends BaseController
     public function price()
     {
         [$page, $limit] = $this->getPage();
+        !$page && $page =1;
+        !$limit && $limit =10;
         $mealInfo = $this->service->meal($page, $limit);
         if ($mealInfo['status'] == 400) return app('json')->fail($mealInfo['msg']);
         return app('json')->success($mealInfo['data']);

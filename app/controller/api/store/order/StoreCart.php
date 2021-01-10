@@ -179,6 +179,7 @@ class StoreCart extends BaseController
            throw new ValidateException('商品不存在');
         if( $data['cart_num'] < 0 )
             throw new ValidateException('数量必须大于0');
+        dump($data['product_attr_unique']);
         if(!$res= app()->make(ProductAttrValueRepository::class)->getOptionByUnique($data['product_attr_unique']))
             throw new ValidateException('SKU不存在');
         if($res['product_id'] != $data['product_id'])

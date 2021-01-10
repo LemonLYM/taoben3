@@ -13,6 +13,7 @@ use app\common\repositories\system\merchant\MerchantCategoryRepository;
 use app\common\repositories\system\merchant\MerchantRepository;
 use app\common\repositories\user\UserCaRepository;
 use app\common\repositories\user\UserMerRepository;
+use app\common\repositories\user\UserRepository;
 use crmeb\exceptions\AuthException;
 use crmeb\services\YunxinSmsService;
 use think\App;
@@ -35,8 +36,8 @@ class MerchantIntention extends BaseController
     {
         $data = $this->request->params(['phone', 'mer_name', 'name', 'code','images','merchant_category_id',"idCardImages"]);
         $check = (YunxinSmsService::create())->checkSmsCode($data['phone'], $data['code'],'intention');
-        //if (!$check) return app('json')->fail('验证码不正确');
-//        $categ = app()->make(MerchantCategoryRepository::class)->get($data['merchant_category_id']);
+        if (!$check) return app('json')->fail('验证码不正确');
+        $categ = app()->make(MerchantCategoryRepository::class)->get($data['merchant_category_id']);
 //        if(!$categ) return app('json')->fail('商户分类不存在');
         if (!$this->userInfo){
             throw new AuthException('token过期');
@@ -61,6 +62,7 @@ class MerchantIntention extends BaseController
                 'mer_address' =>"",         //商户地址
                 'mark' =>"",        //备注
                 'status' =>"",          //开启状态
+                'mer_avatar' => $this->userInfo->avatar,
                 'commission_rate' =>"",         //提成比例
             ];
             $caData = array_merge($data["idCardImages"], [$data["images"][0]]);
@@ -79,7 +81,7 @@ class MerchantIntention extends BaseController
         ];
         app()->make(UserMerRepository::class)->create($userMerData);
         //待审核状态.
-        app()->make(UserRepository::class)->save(["uid"=>$data['uid'], ["mer_ca" =>0]]);
+        app()->make(UserRepository::class)->save(["uid"=>$data['uid']], ["mer_ca" =>0]);
 
 
         $this->repository->create($data);

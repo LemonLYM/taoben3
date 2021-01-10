@@ -98,9 +98,9 @@ class UserRelationRepository extends BaseRepository
             list($a, $list) = app()->make(ProductRepository::class)->getByIds( $pids, $page, $limit);
         }elseif($where['type'] == 10){
             $mer_ids = array_column($query->select()->toArray(), 'type_id');
-            $pQuery = Product::where('mer_id', 'in', $mer_ids)->where((new ProductDao())->productShow());
-            $count = $pQuery->count();
-            $pids = array_column($query->page($page, $limit)->select()->toArray(), 'product_id');
+            $pQuery = Product::where('mer_id', 'in', $mer_ids)->Group('mer_id');
+            $pids = array_column($pQuery->page($page, $limit)->select()->toArray(), 'product_id');
+            $count = count($mer_ids);
             list($a, $list) = app()->make(ProductRepository::class)->getByIds( $pids, $page, $limit);
         }
 

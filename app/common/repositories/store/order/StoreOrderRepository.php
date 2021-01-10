@@ -14,6 +14,7 @@ namespace app\common\repositories\store\order;
 use app\common\dao\store\order\StoreOrderDao;
 use app\common\model\store\order\StoreGroupOrder;
 use app\common\model\store\order\StoreOrder;
+use app\common\model\system\merchant\Merchant;
 use app\common\model\user\User;
 use app\common\repositories\BaseRepository;
 use app\common\repositories\store\coupon\StoreCouponRepository;
@@ -204,7 +205,8 @@ class StoreOrderRepository extends BaseRepository
             //TODO 生成订单
 
             $_order = [
-                'commission_rate' => (float)$merchantRepository->get($cartInfo['mer_id'])->mer_commission_rate,
+//                'commission_rate' => (float)$merchantRepository->get($cartInfo['mer_id'])->mer_commission_rate,
+                'commission_rate' => (float)$merchantRepository->get($cartInfo['mer_id'])->commission_rate,
                 'order_type' => in_array($cartInfo['mer_id'], $takes) == 1 ? 1 : 0,
                 'extension_one' => $total_extension_one,
                 'extension_two' => $total_extension_two,
@@ -490,12 +492,12 @@ class StoreOrderRepository extends BaseRepository
                 ];
 
                 //TODO 成为推广员
-                foreach ($order->orderProduct as $product) {
-                    if ($flag && $product['cart_info']['product']['is_gift_bag']) {
-                        app()->make(UserRepository::class)->promoter($order->uid);
-                        $flag = false;
-                    }
-                }
+//                foreach ($order->orderProduct as $product) {
+//                    if ($flag && $product['cart_info']['product']['is_gift_bag']) {
+//                        app()->make(UserRepository::class)->promoter($order->uid);
+//                        $flag = false;
+//                    }
+//                }
 
                 $finance[] = [
                     'order_id' => $order->order_id,
@@ -675,7 +677,7 @@ class StoreOrderRepository extends BaseRepository
         $order_total_price = 0;
         $noDeliver = false;
         foreach ($merchantInfo as $k => $cartInfo) {
-            $postageRule = [];
+//            $postageRule = [];
             $total_price = 0;
             $total_num = 0;
             $valid_total_price = 0;
@@ -696,68 +698,74 @@ class StoreOrderRepository extends BaseRepository
                     $product_cart[$cart['product_id']] = [$cart['cart_id']];
                 else
                     $product_cart[$cart['product_id']][] = $cart['cart_id'];
-                if (!$address || !$cart['product']['temp']) {
+                if (!$address) {
                     $cartInfo['list'][$_k]['undelivered'] = true;
-                    $noDeliver = true;
-                    continue;
+//                    $noDeliver = true;
+//                    continue;
                 }
-                $temp1 = $cart['product']['temp'];
-                $cart['undelivered'] = $temp1['undelivery'] && isset($temp1['undelives']);
+//                $temp1 = $cart['product']['temp'];
+//                $cart['undelivered'] = $temp1['undelivery'] && isset($temp1['undelives']);
+                $cart['undelivered'] = false;
                 $free = $temp1['free'][0] ?? null;
                 $region = $temp1['region'][0] ?? null;
-                unset($cartInfo['list'][$_k]['product']['temp']);
+//                unset($cartInfo['list'][$_k]['product']['temp']);
                 $cartInfo['list'][$_k] = $cart;
 
                 if ($cart['undelivered']) {
-                    $noDeliver = true;
-                    continue;
+//                    $noDeliver = true;
+//                    continue;
                 }
 
-                if (!isset($postageRule[$cart['product']['temp_id']])) {
-                    $postageRule[$cart['product']['temp_id']] = [
-                        'free' => null,
-                        'region' => null
-                    ];
-                }
-                $number = $this->productByTempNumber($cart);
-                $freeRule = $postageRule[$cart['product']['temp_id']]['free'];
-                $regionRule = $postageRule[$cart['product']['temp_id']]['region'];
-                if ($temp1['appoint'] && $free) {
-                    if (!isset($freeRule)) {
-                        $freeRule = $free;
-                        $freeRule['cart_price'] = 0;
-                        $freeRule['cart_number'] = 0;
-                    }
-                    $freeRule['cart_number'] = bcadd($freeRule['cart_number'], $number, 2);
-                    $freeRule['cart_price'] = bcadd($freeRule['cart_price'], $price, 2);
-                }
+                //新方法计算邮费.
+                $postage_price = bcadd($postage_price, $cart['cart_num']*$cart['product']['postage'], 2);
 
-                if ($region) {
-                    if (!isset($regionRule)) {
-                        $regionRule = $region;
-                        $regionRule['cart_price'] = 0;
-                        $regionRule['cart_number'] = 0;
-                    }
-                    $regionRule['cart_number'] = bcadd($regionRule['cart_number'], $number, 2);
-                    $regionRule['cart_price'] = bcadd($regionRule['cart_price'], $price, 2);
-                }
-                $postageRule[$cart['product']['temp_id']]['free'] = $freeRule;
-                $postageRule[$cart['product']['temp_id']]['region'] = $regionRule;
+//                if (!isset($postageRule[$cart['product']['temp_id']])) {
+//                    $postageRule[$cart['product']['temp_id']] = [
+//                        'free' => null,
+//                        'region' => null
+//                    ];
+//                }
+//                $number = $this->productByTempNumber($cart);
+//                $freeRule = $postageRule[$cart['product']['temp_id']]['free'];
+//                $regionRule = $postageRule[$cart['product']['temp_id']]['region'];
+//                if ($temp1['appoint'] && $free) {
+//                    if (!isset($freeRule)) {
+//                        $freeRule = $free;
+//                        $freeRule['cart_price'] = 0;
+//                        $freeRule['cart_number'] = 0;
+//                    }
+//                    $freeRule['cart_number'] = bcadd($freeRule['cart_number'], $number, 2);
+//                    $freeRule['cart_price'] = bcadd($freeRule['cart_price'], $price, 2);
+//                }
+
+//                if ($region) {
+//                    if (!isset($regionRule)) {
+//                        $regionRule = $region;
+//                        $regionRule['cart_price'] = 0;
+//                        $regionRule['cart_number'] = 0;
+//                    }
+//                    $regionRule['cart_number'] = bcadd($regionRule['cart_number'], $number, 2);
+//                    $regionRule['cart_price'] = bcadd($regionRule['cart_price'], $price, 2);
+//                }
+//                $postageRule[$cart['product']['temp_id']]['free'] = $freeRule;
+//                $postageRule[$cart['product']['temp_id']]['region'] = $regionRule;
             }
 
-            foreach ($postageRule as $item) {
-                $freeRule = $item['free'];
-                if ($freeRule && $freeRule['cart_number'] >= $freeRule['number'] && $freeRule['cart_price'] >= $freeRule['price'])
-                    continue;
-                if (!$item['region']) continue;
-                $regionRule = $item['region'];
-                $postage = bcadd($postage_price, $regionRule['first_price'], 2);
-                if ($regionRule['first'] > 0 && $regionRule['cart_number'] > $regionRule['first']) {
-                    $num = ceil(bcdiv(bcsub($regionRule['cart_number'], $regionRule['first'], 2), $regionRule['continue'], 2));
-                    $postage = bcadd($postage, bcmul($num, $regionRule['continue_price'], 2), 2);
-                }
-                $postage_price = bcadd($postage_price, $postage, 2);
-            }
+//            foreach ($postageRule as $item) {
+//                $freeRule = $item['free'];
+//                if ($freeRule && $freeRule['cart_number'] >= $freeRule['number'] && $freeRule['cart_price'] >= $freeRule['price'])
+//                    continue;
+//                if (!$item['region']) continue;
+//                $regionRule = $item['region'];
+//                $postage = bcadd($postage_price, $regionRule['first_price'], 2);
+//                if ($regionRule['first'] > 0 && $regionRule['cart_number'] > $regionRule['first']) {
+//                    $num = ceil(bcdiv(bcsub($regionRule['cart_number'], $regionRule['first'], 2), $regionRule['continue'], 2));
+//                    $postage = bcadd($postage, bcmul($num, $regionRule['continue_price'], 2), 2);
+//                }
+////                $postage_price = bcadd($postage_price, $postage, 2);
+//            }
+
+
             $coupon_price = 0;
             $use_coupon_product = [];
             $use_store_coupon = 0;
@@ -896,7 +904,10 @@ class StoreOrderRepository extends BaseRepository
      */
     public function computed(StoreOrder $order, User $user)
     {
-        $userBillRepository = app()->make(UserBillRepository::class);
+//        $userBillRepository = app()->make(UserBillRepository::class);
+        $merUserId = app()->make(UserMerRepository::class)->getUseridByMerid($order->mer_id);
+        $userRepository = app()->make(UserRepository::class);
+        $mer = Merchant::find($order->mer_id);
         //TODO 添加冻结佣金
         if ($order->extension_one > 0 && $user->spread_uid) {
 //            $userBillRepository->incBill($user->spread_uid, 'brokerage', 'order_one', [
@@ -908,13 +919,8 @@ class StoreOrderRepository extends BaseRepository
 //                'balance' => 0
 //            ]);
 
-            $merUserId = app()->make(UserMerRepository::class)->getUseridByMerid($order->mer_id);
 
 
-            $userRepository = app()->make(UserRepository::class);
-
-            $userRepository->incrCredit($merUserId);
-            $userRepository->incrCredit($user->uid);
 
             $userRepository->incBrokerage($user->spread_uid, $order->extension_one);
             app()->make(FinancialRecordRepository::class)->dec([
@@ -926,7 +932,31 @@ class StoreOrderRepository extends BaseRepository
                 'number' => $order->extension_one,
             ], $order->mer_id);
         }
-        //添加积分
+
+
+        //TODO 优惠券
+        $product_price = bcsub($order->pay_price , $order->total_postage, 2);
+        $addMoney = bcadd($product_price * $mer->commission_rate ,$order->total_postage, 2);
+
+        $mark = "卖出商品, 订单号:{$order->order_id}, 获得商品售价{$product_price} * 提成比例{$mer->commission_rate} + 邮费{$order->total_postage}= {$addMoney} ";
+        app()->make(UserBillRepository::class)->incBill($user->uid, 'now_money', 'recharge', [
+            'link_id' => $order->order_id,
+            'status' => 1,
+            'title' => '卖出商品',
+            'number' => $product_price * $mer->commission_rate + $order->pay_price,
+            'mark' => $mark,
+            'balance' => $user->now_money
+        ]);
+
+        $user->now_money = bcadd($user->now_money, $addMoney, 2);
+        $user->save();
+
+
+        if($product_price >= 100){
+            // 出售商品价格超过100 加积分.添加积分
+            $userRepository->incrCredit($merUserId);
+//           $userRepository->incrCredit($user->uid);
+        }
 
 
 //        if ($order->extension_two > 0 && $user->top_uid) {

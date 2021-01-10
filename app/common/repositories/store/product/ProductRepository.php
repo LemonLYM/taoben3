@@ -987,7 +987,7 @@ class ProductRepository extends BaseRepository
         $field = 'product_id,mer_id,image,slider_image,store_name,store_info,unit_name,price,cost,ot_price,stock,sales,video_link,product_type,extension_type';
         $with = ['attr', 'attrValue', 'content', 'topReply.orderProduct' => function ($query) {
             $query->field('reply_id,uid,nickname,merchant_reply_content,avatar,order_product_id,product_id,product_score,service_score,postage_score,comment,pics,rate,create_time');
-        }, 'merchant.recommend'];
+        }, 'merchant.recommend','userMer', 'merCateId'];
         $res = $this->dao->getWhere($where, $field, $with);
         if (!$res) return null;
         if ($userInfo) {
@@ -1002,6 +1002,19 @@ class ProductRepository extends BaseRepository
             unset($res['topReply']['orderProduct']);
         }
         $attr = $this->detailAttr($res['attr']);
+
+        $res['province_name'] = AddressUtils::getAddressName($res['province']);
+        $res['city_name'] = AddressUtils::getAddressName($res['city']);
+        $res['merchant']['credit'] = $res['userMer']['credit'];
+        $mer_cate_id= [];
+        $mer_cate_name = [];
+        foreach ($res['merCateId'] as $cate){
+            $mer_cate_id[] = $cate->mer_cate_id;
+            $mer_cate_name[] = CateUtils::getAddressName($cate->mer_cate_id);
+        }
+        $res['mer_cate_id'] = $mer_cate_id;
+        $res['mer_cate_name'] = $mer_cate_name;
+
         unset($res['attrValue']);
         unset($res['attr']);
         $res['attr'] = $attr;

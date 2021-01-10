@@ -74,18 +74,20 @@ class StoreCartDao extends BaseDao
     public function cartIbByData(array $ids, int $uid, ?int $cityId, bool $confirm = true)
     {
         return StoreCart::getDb()->where('uid', $uid)->with(['product' => function (Relation $query) use ($cityId) {
-            $query->field('product_id,image,store_name,is_show,status,is_del,unit_name,price,mer_status,temp_id,give_coupon_ids,is_gift_bag,is_used,product_type,old_product_id');
-            if ($cityId) {
-                $query->with(['temp' => ['region' => function (Relation $query) use ($cityId) {
-                    $query->where(function ($query) use ($cityId) {
-                        $query->whereLike('city_id', "%/{$cityId}/%")->whereOr('city_id', '0');
-                    })->order('shipping_template_region_id DESC')->withLimit(1);
-                }, 'undelives' => function ($query) use ($cityId) {
-                    $query->whereLike('city_id', "%/{$cityId}/%");
-                }, 'free' => function (Relation $query) use ($cityId) {
-                    $query->whereLike('city_id', "%/{$cityId}/%")->order('shipping_template_free_id DESC')->withLimit(1);
-                }]]);
-            }
+            $query->field('product_id,image,store_name,is_show,status,is_del,unit_name,price,mer_status,temp_id,give_coupon_ids,is_gift_bag,is_used,product_type,old_product_id,postage');
+//            if ($cityId) {
+//                $query->with(['temp' => [
+//                    'region' => function (Relation $query) use ($cityId) {
+//                    $query->where(function ($query) use ($cityId) {
+//                        $query->whereLike('city_id', "%/{$cityId}/%")->whereOr('city_id', '0');
+//                    })->order('shipping_template_region_id DESC')->withLimit(1);
+//                },
+//                    'undelives' => function ($query) use ($cityId) {
+//                    $query->whereLike('city_id', "%/{$cityId}/%");
+//                }, 'free' => function (Relation $query) use ($cityId) {
+//                    $query->whereLike('city_id', "%/{$cityId}/%")->order('shipping_template_free_id DESC')->withLimit(1);
+//                }]]);
+//            }
         }, 'productAttr' => function (Relation $query) use ($confirm) {
             $query->field('image,extension_one,extension_two,product_id,stock,price,unique,sku,volume,weight,ot_price ' . ($confirm ? '' : ',cost'))
                 ->append(['bc_extension_one', 'bc_extension_two']);

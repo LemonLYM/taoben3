@@ -24,9 +24,9 @@ class AddressUtils
             return $name;
         }else{
             $name = (new CityDao())->selectWhere(["city_id"=>$id, "is_show" => 1], "name");
-            if($name){
+            if(count($name) > 0){
                 Cache::set('address_' . $id, $name[0]['name']);
-                return $name;
+                return $name[0]['name'];
             }
         }
         return "";

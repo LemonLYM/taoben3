@@ -347,6 +347,41 @@ class User extends BaseController
     }
 
     /**
+     * @param $id
+     * @return mixed
+     * @throws FormBuilderException
+     * @author xaboy
+     * @day 2020-05-07
+     */
+    public function changeNowCredit($id)
+    {
+        if (!$this->repository->exists($id))
+            return app('json')->fail('数据不存在');
+        return app('json')->success(formToData($this->repository->changeCreditFrom($id)));
+    }
+
+    /**
+     * @param $id
+     * @param UserNowMoneyValidate $validate
+     * @return mixed
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @author xaboy
+     * @day 2020-05-07
+     */
+    public function changeCredit($id, UserNowMoneyValidate $validate)
+    {
+        $data = $this->request->params(['credit', 'type']);
+        $validate->check($data);
+        if (!$this->repository->exists($id))
+            return app('json')->fail('数据不存在');
+        $this->repository->changeNowMoney($id, $this->request->adminId(), $data['type'], $data['credit']);
+
+        return app('json')->success('修改成功');
+    }
+
+    /**
      * @param WechatNewsRepository $wechatNewsRepository
      * @param WechatUserRepository $wechatUserRepository
      * @return mixed

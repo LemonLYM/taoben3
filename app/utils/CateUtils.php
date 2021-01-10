@@ -25,9 +25,9 @@ class CateUtils
             return $name;
         }else{
             $name = (new StoreCategoryDao())->selectWhere(["store_category_id"=>$id, "is_show" => 1], "cate_name");
-            if($name){
+            if(count($name) > 0){
                 Cache::set('cate_' . $id, $name[0]['cate_name']);
-                return $name;
+                return $name[0]['cate_name'];
             }
         }
         return "";
