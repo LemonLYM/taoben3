@@ -238,12 +238,13 @@ Route::group('api/', function () {
         Route::post('FromByUser/:id', 'merchant.store.product.Product/FromByUser')->name('merchantStoreProductUpdate');
         Route::post('status/:id', 'merchant.store.product.Product/switchStatus')->name('merchantStoreProductSwitchStatus');
         Route::get('my/lst', 'merchant.store.product.Product/myLst'); // 我发布的
-        Route::get('my/chart', 'merchant.store.product.Product/chart'); // 我发布的
     })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
 
     Route::group("store/order", function(){
+        Route::get('my/chart', 'merchant.store.product.Order/chart'); // 我发布的
         Route::get('my/lst', 'merchant.store.order.Order/lst'); // 我发布的
         Route::post('delivery/:id', 'merchant.store.order.Order/delivery'); //发货信息
+        Route::get('detail/:id', 'merchant.store.order.Order/detail');
     })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
 
 
