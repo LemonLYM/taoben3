@@ -44,6 +44,11 @@
                 </template>
             </el-table-column>
             <el-table-column prop="real_name" label="用户信息" min-width="150" />
+            <el-table-column label="OpenId" min-width="100">
+                <template slot-scope="scope">
+                    <span>{{ scope.row.openid ? scope.row.openid : "-" }}</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="extract_price" label="提现金额" min-width="120" />
             <el-table-column label="提现方式" min-width="100">
                 <template slot-scope="scope">
@@ -92,130 +97,127 @@
 </template>
 
 <script>
-import {
-    extractListApi,
-    extractStatusApi
-} from '@/api/accounts'
-import {
-    fromList
-} from '@/libs/constants.js'
+import { extractListApi, extractStatusApi } from '@/api/accounts';
+import { fromList } from '@/libs/constants.js';
 export default {
-    name: 'AccountsExtract',
-    data() {
-        return {
-            timeVal: [],
-            tableData: {
-                data: [],
-                total: 0
-            },
-            listLoading: true,
-            tableFrom: {
-                extract_type: '',
-                status: '',
-                date: '',
-                keyword: '',
-                page: 1,
-                limit: 20
-            },
-            fromList: fromList
+  name: 'AccountsExtract',
+  data() {
+    return {
+      timeVal: [],
+      tableData: {
+        data: [],
+        total: 0
+      },
+      listLoading: true,
+      tableFrom: {
+        extract_type: '',
+        status: '',
+        date: '',
+        keyword: '',
+        page: 1,
+        limit: 20
+      },
+      fromList: fromList
+    };
+  },
+  mounted() {
+    this.getList();
+  },
+  methods: {
+    onExamine(id) {
+      this.$prompt('未通过', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputErrorMessage: '请输入原因',
+        inputType: 'textarea',
+        inputValue: '输入信息不完整或有误!',
+        inputPlaceholder: '请输入原因',
+        inputValidator: value => {
+          if (!value) {
+            return '请输入原因';
+          }
         }
+      })
+        .then(({ value }) => {
+          extractStatusApi(id, {
+            status: -1,
+            fail_msg: value
+          })
+            .then(res => {
+              this.$message({
+                type: 'success',
+                message: '提交成功'
+              });
+              this.getList();
+            })
+            .catch(res => {
+              this.$message.error(res.message);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });
+        });
     },
-    mounted() {
-        this.getList()
+    ok(id) {
+      this.$modalSure('审核通过吗').then(() => {
+        extractStatusApi(id, {
+          status: 1
+        })
+          .then(({ message }) => {
+            this.$message.success(message);
+            this.getList();
+          })
+          .catch(({ message }) => {
+            this.$message.error(message);
+          });
+      });
     },
-    methods: {
-        onExamine(id) {
-            this.$prompt('未通过', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                inputErrorMessage: '请输入原因',
-                inputType: 'textarea',
-                inputValue: '输入信息不完整或有误!',
-                inputPlaceholder: '请输入原因',
-                inputValidator: (value) => {
-                    if (!value) {
-                        return '请输入原因'
-                    }
-                }
-            }).then(({
-                value
-            }) => {
-                extractStatusApi(id, {
-                    status: -1,
-                    fail_msg: value
-                }).then(res => {
-                    this.$message({
-                        type: 'success',
-                        message: '提交成功'
-                    })
-                    this.getList()
-                }).catch((res) => {
-                    this.$message.error(res.message)
-                })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '取消输入'
-                })
-            })
-        },
-        ok(id) {
-            this.$modalSure('审核通过吗').then(() => {
-                extractStatusApi(id, {
-                    status: 1
-                }).then(({
-                    message
-                }) => {
-                    this.$message.success(message)
-                    this.getList()
-                }).catch(({
-                    message
-                }) => {
-                    this.$message.error(message)
-                })
-            })
-        },
-        // 选择时间
-        selectChange(tab) {
-            this.timeVal = []
-            this.tableFrom.date = tab
-            this.tableFrom.page = 1;
-            this.getList()
-        },
-        // 具体日期
-        onchangeTime(e) {
-            this.timeVal = e
-            this.tableFrom.date = e ? this.timeVal.join('-') : ''
-            this.tableFrom.page = 1;
-            this.getList()
-        },
-        // 列表
-        getList(num) {
-            this.listLoading = true
-            this.tableFrom.page = num ? num : this.tableFrom.page;
-            extractListApi(this.tableFrom).then(res => {
-                this.tableData.data = res.data.list
-                this.tableData.total = res.data.count
-                this.listLoading = false
-            }).catch((res) => {
-                this.$message.error(res.message)
-                this.listLoading = false
-            })
-        },
-        pageChange(page) {
-            this.tableFrom.page = page
-            this.getList()
-        },
-        handleSizeChange(val) {
-            this.tableFrom.limit = val
-            this.getList()
-        }
+    // 选择时间
+    selectChange(tab) {
+      this.timeVal = [];
+      this.tableFrom.date = tab;
+      this.tableFrom.page = 1;
+      this.getList();
+    },
+    // 具体日期
+    onchangeTime(e) {
+      this.timeVal = e;
+      this.tableFrom.date = e ? this.timeVal.join('-') : '';
+      this.tableFrom.page = 1;
+      this.getList();
+    },
+    // 列表
+    getList(num) {
+      this.listLoading = true;
+      this.tableFrom.page = num ? num : this.tableFrom.page;
+      extractListApi(this.tableFrom)
+        .then(res => {
+          this.tableData.data = res.data.list;
+          this.tableData.total = res.data.count;
+          this.listLoading = false;
+        })
+        .catch(res => {
+          this.$message.error(res.message);
+          this.listLoading = false;
+        });
+    },
+    pageChange(page) {
+      this.tableFrom.page = page;
+      this.getList();
+    },
+    handleSizeChange(val) {
+      this.tableFrom.limit = val;
+      this.getList();
     }
-}
+  }
+};
 </script>
 
 <style scoped>
 .selWidth {
-    width: 300px;
+  width: 300px;
 }
 </style>
