@@ -554,7 +554,7 @@ export default {
     },
     //修改信誉值
     setCredit(row) {
-      this.$modalForm(chanegCreditApi(row.uid).then(() => this.getList()));
+      this.$modalForm(chanegCreditApi(row.uid)).then(() => this.getList());
     },
     // 批量标签
     batchlabel() {
@@ -568,7 +568,7 @@ export default {
     },
     // 修改余额
     setMoney(row) {
-      this.$modalForm(changeNowMoneyApi(row.uid).then(() => this.getList()));
+      this.$modalForm(changeNowMoneyApi(row.uid)).then(() => this.getList());
     },
     // 列表
     getList(num) {
