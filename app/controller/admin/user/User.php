@@ -377,7 +377,7 @@ class User extends BaseController
         $validate->check($data);
         if (!$this->repository->exists($id))
             return app('json')->fail('数据不存在');
-        $this->repository->changeNowMoney($id, $this->request->adminId(), $data['type'], $data['credit']);
+        $this->repository->changeCredit($id, $this->request->adminId(), $data['type'], $data['credit']);
 
         return app('json')->success('修改成功');
     }

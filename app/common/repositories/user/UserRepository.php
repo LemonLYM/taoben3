@@ -288,6 +288,26 @@ class UserRepository extends BaseRepository
     }
 
     /**
+     * @param $id
+     * @param $adminId
+     * @param $type
+     * @param $credit
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @author xaboy
+     * @day 2020-05-07
+     */
+    public function changeCredit($id, $adminId, $type, $credit)
+    {
+        $user = $this->dao->get($id);
+        Db::transaction(function () use ($id, $adminId, $user, $type, $credit) {
+            $credit = $type == 1 ? bcadd($user->credit, $credit, 2) : bcsub($user->credit, $credit, 2);
+            $user->save(['credit' => $credit]);
+        });
+    }
+
+    /**
      * @param $password
      * @return false|string|null
      * @author xaboy
