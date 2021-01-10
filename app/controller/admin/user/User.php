@@ -353,7 +353,7 @@ class User extends BaseController
      * @author xaboy
      * @day 2020-05-07
      */
-    public function changeNowCredit($id)
+    public function changeCreditForm($id)
     {
         if (!$this->repository->exists($id))
             return app('json')->fail('数据不存在');
