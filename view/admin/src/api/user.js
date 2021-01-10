@@ -8,6 +8,10 @@ export function intentionStatusApiNew(mer_id) {
   return request.get(`/user/intention/status/${mer_id}/form`)
 
 }
+//修改信誉值
+export function chanegCreditApi(id) {
+  return request.get(`user/change_credit/form/${id}`)
+}
 /**
  * @description 验证码
  */

@@ -231,6 +231,7 @@
                             <el-dropdown-item v-if="scope.row.vip_name">清除等级</el-dropdown-item>
                             <el-dropdown-item @click.native="setGroup(scope.row)">设置分组</el-dropdown-item>
                             <el-dropdown-item @click.native="setLabel(scope.row)">设置标签</el-dropdown-item>
+                             <el-dropdown-item v-if="scope.row.mer_ca===1" @click.native="setCredit(scope.row)">设置信誉值</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </template>
@@ -256,6 +257,7 @@ import {
   userLstApi,
   changeGroupApi,
   changelabelApi,
+  chanegCreditApi,
   changeNowMoneyApi,
   batchChangeGroupApi,
   batchChangelabelApi,
@@ -544,6 +546,10 @@ export default {
     // 修改标签
     setLabel(row) {
       this.$modalForm(changelabelApi(row.uid));
+    },
+    //修改信誉值
+    setCredit(row) {
+      this.$modalForm(chanegCreditApi(row.uid));
     },
     // 批量标签
     batchlabel() {
