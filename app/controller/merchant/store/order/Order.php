@@ -32,6 +32,15 @@ class Order extends BaseController
         $this->repository = $repository;
     }
 
+    /**
+     * @return mixed
+     * @author xaboy
+     * @day 2020/6/10
+     */
+    public function number()
+    {
+        return app('json')->success($this->repository->merOrderNumber($this->request->uid()));
+    }
 
     /**
      * 订单列表

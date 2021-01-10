@@ -865,6 +865,26 @@ class StoreOrderRepository extends BaseRepository
     }
 
     /**
+     * @param int $uid
+     * @return array
+     * @author xaboy
+     * @day 2020/6/10
+     */
+    public function merOrderNumber(int $uid)
+    {
+        $noPay = app()->make(StoreGroupOrderRepository::class)->orderNumber($uid);
+        $noPostage = $this->dao->search(['uid' => $uid, 'status' => 0, 'paid' => 1])->where('is_del', 0)->count();
+        $all = $this->dao->search(['uid' => $uid, 'paid' => 1])->where('is_del', 0)->count();
+        $noDeliver = $this->dao->search(['uid' => $uid, 'status' => 1, 'paid' => 1])->where('is_del', 0)->count();
+        $noComment = $this->dao->search(['uid' => $uid, 'status' => 2, 'paid' => 1])->where('is_del', 0)->count();
+        $done = $this->dao->search(['uid' => $uid, 'status' => 3, 'paid' => 1])->where('is_del', 0)->count();
+        $refund = app()->make(StoreRefundOrderRepository::class)->getWhereCount(['uid' => $uid, 'status' => [0, 1, 2]]);
+        $orderPrice = $this->dao->search(['uid' => $uid, 'paid' => 1])->sum('pay_price');
+        $orderCount = $this->dao->search(['uid' => $uid, 'paid' => 1])->count();
+        return compact('noComment', 'done', 'refund', 'noDeliver', 'noPay', 'noPostage', 'orderPrice', 'orderCount', 'all');
+    }
+
+    /**
      * @param $id
      * @param null $uid
      * @return array|Model|null
