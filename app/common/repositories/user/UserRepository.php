@@ -235,7 +235,7 @@ class UserRepository extends BaseRepository
      */
     public function changeCreditFrom($id)
     {
-        return Elm::createForm(Route::buildUrl('systemUserChangeNowMoney', compact('id'))->build(), [
+        return Elm::createForm(Route::buildUrl('systemUserChangeCredit', compact('id'))->build(), [
             Elm::radio('type', '修改信誉值', 1)->options([
                 ['label' => '增加', 'value' => 1],
                 ['label' => '减少', 'value' => 0],
@@ -285,6 +285,26 @@ class UserRepository extends BaseRepository
         });
 
 
+    }
+
+    /**
+     * @param $id
+     * @param $adminId
+     * @param $type
+     * @param $credit
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @author xaboy
+     * @day 2020-05-07
+     */
+    public function changeCredit($id, $adminId, $type, $credit)
+    {
+        $user = $this->dao->get($id);
+        Db::transaction(function () use ($id, $adminId, $user, $type, $credit) {
+            $credit = $type == 1 ? bcadd($user->credit, $credit, 2) : bcsub($user->credit, $credit, 2);
+            $user->save(['credit' => $credit]);
+        });
     }
 
     /**

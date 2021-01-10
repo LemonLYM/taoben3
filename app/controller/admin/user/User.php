@@ -11,6 +11,7 @@
 namespace app\controller\admin\user;
 
 
+use app\validate\admin\UserCreditValidate;
 use crmeb\basic\BaseController;
 use app\common\repositories\store\coupon\StoreCouponRepository;
 use app\common\repositories\store\coupon\StoreCouponUserRepository;
@@ -353,7 +354,7 @@ class User extends BaseController
      * @author xaboy
      * @day 2020-05-07
      */
-    public function changeNowCredit($id)
+    public function changeCreditForm($id)
     {
         if (!$this->repository->exists($id))
             return app('json')->fail('数据不存在');
@@ -370,13 +371,13 @@ class User extends BaseController
      * @author xaboy
      * @day 2020-05-07
      */
-    public function changeCredit($id, UserNowMoneyValidate $validate)
+    public function changeCredit($id, UserCreditValidate $validate)
     {
         $data = $this->request->params(['credit', 'type']);
         $validate->check($data);
         if (!$this->repository->exists($id))
             return app('json')->fail('数据不存在');
-        $this->repository->changeNowMoney($id, $this->request->adminId(), $data['type'], $data['credit']);
+        $this->repository->changeCredit($id, $this->request->adminId(), $data['type'], $data['credit']);
 
         return app('json')->success('修改成功');
     }
