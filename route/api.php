@@ -245,7 +245,7 @@ Route::group('api/', function () {
 //        Route::get('my/chart', 'merchant.store.product.Order/chart'); // 我发布的分类数量
         Route::get('my/lst', 'merchant.store.order.Order/lst'); // 我发布的
         Route::post('delivery/:id', 'merchant.store.order.Order/delivery'); //发货信息
-        Route::get('detail/:id', 'merchant.store.order.Order/detail');
+        Route::get('detail/:id', 'merchant.store.order.Order/orderDetail');
     })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
 
 

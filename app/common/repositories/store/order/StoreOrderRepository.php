@@ -907,6 +907,17 @@ class StoreOrderRepository extends BaseRepository
         })->find();
     }
 
+    public function getDetailByMerid($id, $mer_id = null)
+    {
+        $where = [];
+        if ($mer_id) $where['mer_id'] = $mer_id;
+        return $this->dao->search($where)->where('order_id', $id)->where('is_del', 0)->with(['orderProduct', 'merchant' => function ($query) {
+            return $query->field('mer_id,mer_name');
+        }])->with(['user' => function ($query) {
+            return $query->field('uid,nickname');
+        }])->find();
+    }
+
     public function codeByDetail($code, $uid = null)
     {
         $where = [];

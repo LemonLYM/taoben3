@@ -184,6 +184,17 @@ class Order extends BaseController
         return app('json')->success($data);
     }
 
+    public function orderDetail($id)
+    {
+        $order = $this->repository->getDetailByMerid((int)$id, $this->request->merId());
+        if (!$order)
+            return app('json')->fail('订单不存在');
+        if ($order->order_type == 1) {
+            $order->append(['take']);
+        }
+        return app('json')->success($order->toArray());
+    }
+
     /**
      * @param $id
      * @return mixed
