@@ -235,7 +235,7 @@ class UserRepository extends BaseRepository
      */
     public function changeCreditFrom($id)
     {
-        return Elm::createForm(Route::buildUrl('systemUserChangeNowMoney', compact('id'))->build(), [
+        return Elm::createForm(Route::buildUrl('systemUserChangeCredit', compact('id'))->build(), [
             Elm::radio('type', '修改信誉值', 1)->options([
                 ['label' => '增加', 'value' => 1],
                 ['label' => '减少', 'value' => 0],
