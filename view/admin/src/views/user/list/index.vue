@@ -210,6 +210,11 @@
 
                 </template>
             </el-table-column>
+            <el-table-column label="信誉值" min-width="140">
+                <template slot-scope="{row}">
+                  <span>{{ row.mer_ca == 1 ? row.credit : '-'  }}</span>
+                </template>
+            </el-table-column>
             <el-table-column label="推荐人" min-width="140">
                 <template slot-scope="{row}">
                   <span>{{ row.spread ? row.spread.nickname + ' / ' + row.spread.spread_uid : '-'  }}</span>
@@ -226,12 +231,13 @@
                             更多<i class="el-icon-arrow-down el-icon--right" />
                         </span>
                         <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item v-if="scope.row.mer_ca==1" @click.native="setCredit(scope.row)">设置信誉值</el-dropdown-item>
                             <el-dropdown-item @click.native="onDetails(scope.row.uid)">账户详情</el-dropdown-item>
                             <el-dropdown-item @click.native="setMoney(scope.row)">设置余额</el-dropdown-item>
                             <el-dropdown-item v-if="scope.row.vip_name">清除等级</el-dropdown-item>
                             <el-dropdown-item @click.native="setGroup(scope.row)">设置分组</el-dropdown-item>
                             <el-dropdown-item @click.native="setLabel(scope.row)">设置标签</el-dropdown-item>
-                            <el-dropdown-item v-if="scope.row.mer_ca===1" @click.native="setCredit(scope.row)">设置信誉值</el-dropdown-item>
+
                         </el-dropdown-menu>
                     </el-dropdown>
                 </template>
