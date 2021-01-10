@@ -1113,6 +1113,11 @@ class StoreOrderRepository extends BaseRepository
     public function getOrderType($status)
     {
         $param['is_del'] = 0;
+
+        if($status === 0){
+            return $param;
+        }
+
         switch ($status) {
             case 1:
                 $param['paid'] = 0;
