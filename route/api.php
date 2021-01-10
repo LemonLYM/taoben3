@@ -121,6 +121,7 @@ Route::group('api/', function () {
             Route::get('/extract/lst', 'UserExtract/lst');
             Route::get('/extract/banklst', 'UserExtract/bankLst');
             Route::post('/extract/create', 'UserExtract/create');
+            Route::post('/extract/userCreate', 'UserExtract/userCreate');//用户提现
 
             //绑定手机号
             Route::post('binding', 'User/binding');
@@ -237,6 +238,7 @@ Route::group('api/', function () {
         Route::post('FromByUser/:id', 'merchant.store.product.Product/FromByUser')->name('merchantStoreProductUpdate');
         Route::post('status/:id', 'merchant.store.product.Product/switchStatus')->name('merchantStoreProductSwitchStatus');
         Route::get('my/lst', 'merchant.store.product.Product/myLst'); // 我发布的
+        Route::get('my/chart', 'merchant.store.product.Product/chart'); // 我发布的
     })->middleware(UserTokenMiddleware::class, false)->middleware(UserMerMiddleware::class);
 
     Route::group("store/order", function(){

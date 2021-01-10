@@ -104,6 +104,33 @@ class UserExtractRepository extends BaseRepository
         ]);
     }
 
+    /**
+     * 用户从余额提现
+     * @param $user
+     * @param $data
+     * @author Qinii
+     * @day 2020-06-16
+     */
+    public function userCreate($user,$data)
+    {
+        $data = Db::transaction(function()use($user,$data){
+            $now_money = bcsub($user['now_money'],$data['extract_price'],2);
+            $user->now_money = $now_money;
+            $user->save();
+
+            $data['status'] = 0;
+            $data['uid'] = $user['uid'];
+            $data['now_money'] = $now_money;
+            return $this->dao->create($data);
+        });
+
+        SwooleTaskService::admin('notice', [
+            'type' => 'extract',
+            'title' => '您有一条新的提醒申请',
+            'id' => $data->extract_id
+        ]);
+    }
+
     public function switchStatus($id,$data)
     {
         Db::transaction(function()use($id,$data){
