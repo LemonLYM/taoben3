@@ -206,7 +206,7 @@
                     <el-tag v-if="row.user_ca == 1" type="success">通过</el-tag>
                     <el-tag v-if="row.user_ca == 0" type="info">未处理</el-tag>
                     <el-tag v-if="row.user_ca == 2" type="warning">未通过</el-tag>
-
+                    <el-tag v-if="row.user_ca == 4" type="warning">未提交认证</el-tag>
                 </template>
             </el-table-column>
             <el-table-column label="信誉值" min-width="140">
