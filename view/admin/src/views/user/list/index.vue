@@ -224,7 +224,7 @@
             <el-table-column label="操作" min-width="180" fixed="right">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" class="mr10" v-if="scope.row.user_ca == 0"  @click="onchangeIsShow(scope.row.uid)">审批</el-button>
-                    <el-button type="text" size="small" class="mr10" @click="onEdit(scope.row.uid)">编辑1</el-button>
+                    <el-button type="text" size="small" class="mr10" @click="onEdit(scope.row.uid)">编辑</el-button>
                     <el-dropdown>
                         <span class="el-dropdown-link">
                             更多<i class="el-icon-arrow-down el-icon--right" />
