@@ -55,7 +55,8 @@ class UserIntention extends BaseController
     public function switchStatus($uid)
     {
         $status = $this->request->param('status', 0) == 1 ? 1 : 2;
-        app()->make(UserRepository::class)->updateUserInfo($uid, ["user_ca"=> 1]);
+
+        app()->make(UserRepository::class)->updateUserInfo($uid, ["user_ca"=> $status]);
         return app('json')->success('修改成功');
     }
 
