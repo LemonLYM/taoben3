@@ -88,14 +88,17 @@ class MerchantIntention extends BaseController
             return app('json')->fail('数据不存在');
         $status = $this->request->param('status', 0) == 1 ? 1 : 2;
         $this->repository->update($id, ['status' => $status]);
+        $intention = $this->repository->get($id);
+        $uid = $intention->uid;
         if($status == 1){
-            $intention = $this->repository->get($id);
-            $uid = $intention->uid;
             $mer_id = $this->userMerRepository->getMeridByUserid($uid);
             app()->make(UserRepository::class)->updateUserInfo($uid, ["mer_ca"=> 1]);
             $this->userMerRepository->save(["uid"=>$uid, "mer_id"=>$mer_id], ["status" => 1]);
             // TODO 设置商户密码?
             app()->make(MerchantRepository::class)->save(['mer_id'=> $mer_id], ['status' => 1, 'mer_state'=>1]);
+        }else{
+            app()->make(UserRepository::class)->updateUserInfo($uid, ["mer_ca"=> 2]);
+
         }
         return app('json')->success('修改成功');
     }
