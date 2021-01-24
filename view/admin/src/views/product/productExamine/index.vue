@@ -110,9 +110,30 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column label="商品详情图" min-width="80">
+          <template slot-scope="scope">
+            <div class="demo-image__preview">
+              <el-image
+                v-for="(item, index) in slider_image" :key="index"
+                style="width: 36px; height: 36px"
+                :src="item[index]"
+                :preview-src-list="item[index]"
+              />
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="新旧程度" min-width="80">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.new_percentage == 30" type="info">三成新</el-tag>
+            <el-tag v-if="scope.row.new_percentage == 50" type="info">五成新</el-tag>
+            <el-tag v-if="scope.row.new_percentage == 70" type="info">七成新</el-tag>
+            <el-tag v-if="scope.row.new_percentage == 90" type="info">九成新</el-tag>
+            <el-tag v-if="scope.row.new_percentage == 100" type="info">全新</el-tag>
+          </template>
+        </el-table-column>        
         <el-table-column
           prop="store_name"
-          label="商品名称1"
+          label="商品名称"
           min-width="200"
         />
         <el-table-column
@@ -123,7 +144,7 @@
             <span>{{ scope.row.merchant ? scope.row.merchant.mer_name : '' }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="mer_name" label="商户类别" min-width="90">
+        <el-table-column prop="mer_name" label="商户类别" min-width="90"  v-if="Number(tableFrom.type) != 8">
           <template slot-scope="scope">
             <span v-if="scope.row.merchant" class="spBlock">{{ scope.row.merchant .is_trader ? '自营' : '非自营' }}</span>
           </template>
