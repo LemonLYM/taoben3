@@ -49,6 +49,7 @@ class MerchantIntention extends BaseController
             throw new AuthException('已提交过申请');
         }elseif($userMer){
             $this->repository->update($userMer->id, $data);
+            return ;
         }
 
 
