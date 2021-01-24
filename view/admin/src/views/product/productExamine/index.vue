@@ -112,7 +112,7 @@
         </el-table-column>
         <el-table-column
           prop="store_name"
-          label="商品名称"
+          label="商品名称1"
           min-width="200"
         />
         <el-table-column
@@ -134,31 +134,32 @@
           min-width="90"
         />
         <el-table-column
-          v-if="tableFrom.type !== 8"
+          v-if="Number(tableFrom.type) != 8"
           prop="sales"
           label="销量"
           min-width="90"
         />
         <el-table-column
-          v-if="tableFrom.type !== 8"
+          v-if="Number(tableFrom.type) != 8"
           prop="stock"
           label="库存"
           min-width="90"
         />
         <el-table-column
-          v-if="tableFrom.type !== 8"
+          v-if="Number(tableFrom.type) != 8"
           prop="sort"
           label="排序"
           min-width="70"
         />
         <el-table-column
-          v-if="tableFrom.type === 8"
+          v-if="Number(tableFrom.type) == 8"
           prop="store_info"
           label="以旧换新商品描述"
           min-width="300"
         />
+        
         <el-table-column
-          v-if="tableFrom.type !== 8"
+          v-if="Number(tableFrom.type)!= 8"
           prop="status"
           label="是否显示"
           min-width="100"
