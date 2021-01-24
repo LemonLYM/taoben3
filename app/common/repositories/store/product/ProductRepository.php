@@ -47,7 +47,7 @@ class ProductRepository extends BaseRepository
 {
 
     protected $dao;
-    protected $filed = 'product_id,mer_id,brand_id,unit_name,mer_status,rate,reply_count,store_info,cate_id,image,slider_image,store_name,keyword,sort,rank,is_show,sales,price,extension_type,refusal,cost,ot_price,stock,is_gift_bag,care_count,status,is_used,create_time,province,city';
+    protected $filed = 'product_id,mer_id,brand_id,unit_name,mer_status,rate,reply_count,store_info,cate_id,image,slider_image,store_name,keyword,sort,rank,is_show,sales,price,extension_type,refusal,cost,ot_price,stock,is_gift_bag,care_count,status,is_used,create_time,province,city,new_percentage';
 
     /**
      * ProductRepository constructor.
