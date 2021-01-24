@@ -48,8 +48,10 @@ class MerchantIntention extends BaseController
         if($userMer && in_array($this->userInfo->mer_ca, [0,1])){
             throw new AuthException('已提交过申请');
         }elseif($userMer){
-            $this->repository->update($userMer->id, $data);
-            return ;
+            $caData = array_merge($data["idCardImages"], [$data["images"][0]]);
+            app()->make(UserCaRepository::class)->merSave($data['uid'], $caData);
+            app()->make(UserRepository::class)->save(["uid"=>$data['uid']], ["mer_ca" =>0]);
+            return app('json')->success('提交成功');;
         }
 
 
