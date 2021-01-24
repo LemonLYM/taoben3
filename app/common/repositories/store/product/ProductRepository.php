@@ -368,6 +368,7 @@ class ProductRepository extends BaseRepository
             'province' => $data['province'],
             'city' => $data['city'],
             "postage" => $data['postage'],
+            "is_trade" => $data['is_trade'],
         ];
         if (isset($data['is_gift_bag'])) $result['is_gift_bag'] = $data['is_gift_bag'];
         if (isset($data['mer_id'])) $result['mer_id'] = $data['mer_id'];
