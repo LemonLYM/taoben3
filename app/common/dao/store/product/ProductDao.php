@@ -118,6 +118,9 @@ class ProductDao extends BaseDao
         if(isset($where['is_trade']) && $where['is_trade'] !== ''){
             $query->where('is_trade',$where['is_trade']);
         }
+        if(isset($where['product_id']) && $where['product_id'] !== ''){
+            $query->where('product_id',["in",$where['product_id']]);
+        }
         $query->withSearch($keyArray, $whereArr);
         $query->when(($merId !== null), function ($query) use ($merId) {
             $query->where('mer_id', $merId);
