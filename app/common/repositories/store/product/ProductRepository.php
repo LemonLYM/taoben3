@@ -845,7 +845,7 @@ class ProductRepository extends BaseRepository
         //分类
         if(isset($where['cate_id'])){
             $productIds = ProductCate::where(['mer_cate_id' => $where['cate_id']])->column('product_id');
-            $productIds && $where['product_id'] = ["in" => $productIds];
+            $productIds && $where['product_id'] = $productIds;
             unset($where['cate_id']);
         }
 
