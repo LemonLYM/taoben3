@@ -195,7 +195,9 @@ class ProductRepository extends BaseRepository
             $product = $this->setProduct($data);
             $result = $this->dao->create($product);
             $settleParams = $this->setAttrValueByUser($data, $result->product_id, $productType, 0);
-            $settleParams['cate'] = $this->setMerCate($data['mer_cate_id'], $result->product_id, $data['mer_id']);
+            if (isset($data['mer_cate_id']) && !empty($data['mer_cate_id'])){
+                $settleParams['cate'] = $this->setMerCate($data['mer_cate_id'], $result->product_id, $data['mer_id']);
+            }
             $settleParams['attr'] = $this->setAttr($data['attr'], $result->product_id);
             $this->save($result->product_id, $settleParams, $data['content']);
             return $result->product_id;
