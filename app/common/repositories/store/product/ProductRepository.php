@@ -47,7 +47,7 @@ class ProductRepository extends BaseRepository
 {
 
     protected $dao;
-    protected $filed = 'product_id,mer_id,brand_id,unit_name,mer_status,rate,reply_count,store_info,cate_id,image,slider_image,store_name,keyword,sort,rank,is_show,sales,price,extension_type,refusal,cost,ot_price,stock,is_gift_bag,care_count,status,is_used,create_time,province,city';
+    protected $filed = 'product_id,mer_id,brand_id,unit_name,mer_status,rate,reply_count,store_info,cate_id,image,slider_image,store_name,keyword,sort,rank,is_show,sales,price,extension_type,refusal,cost,ot_price,stock,is_gift_bag,care_count,status,is_used,create_time,province,city,new_percentage';
 
     /**
      * ProductRepository constructor.
@@ -195,7 +195,9 @@ class ProductRepository extends BaseRepository
             $product = $this->setProduct($data);
             $result = $this->dao->create($product);
             $settleParams = $this->setAttrValueByUser($data, $result->product_id, $productType, 0);
-            $settleParams['cate'] = $this->setMerCate($data['mer_cate_id'], $result->product_id, $data['mer_id']);
+            if (isset($data['mer_cate_id']) && !empty($data['mer_cate_id'])){
+                $settleParams['cate'] = $this->setMerCate($data['mer_cate_id'], $result->product_id, $data['mer_id']);
+            }
             $settleParams['attr'] = $this->setAttr($data['attr'], $result->product_id);
             $this->save($result->product_id, $settleParams, $data['content']);
             return $result->product_id;
@@ -366,6 +368,7 @@ class ProductRepository extends BaseRepository
             'province' => $data['province'],
             'city' => $data['city'],
             "postage" => $data['postage'],
+            "is_trade" => $data['is_trade'],
         ];
         if (isset($data['is_gift_bag'])) $result['is_gift_bag'] = $data['is_gift_bag'];
         if (isset($data['mer_id'])) $result['mer_id'] = $data['mer_id'];

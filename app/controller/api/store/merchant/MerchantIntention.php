@@ -37,7 +37,7 @@ class MerchantIntention extends BaseController
         $data = $this->request->params(['phone', 'mer_name', 'name', 'code','images','merchant_category_id',"idCardImages"]);
         $check = (YunxinSmsService::create())->checkSmsCode($data['phone'], $data['code'],'intention');
         if (!$check) return app('json')->fail('验证码不正确');
-        $categ = app()->make(MerchantCategoryRepository::class)->get($data['merchant_category_id']);
+//        $categ = app()->make(MerchantCategoryRepository::class)->get($data['merchant_category_id']);
 //        if(!$categ) return app('json')->fail('商户分类不存在');
         if (!$this->userInfo){
             throw new AuthException('token过期');
@@ -45,8 +45,13 @@ class MerchantIntention extends BaseController
         $data['uid'] = $this->userInfo->uid;
 
         $userMer = app()->make(UserMerRepository::class)->getWhere(["uid"=>$data['uid']]);
-        if($userMer){
+        if($userMer && in_array($this->userInfo->mer_ca, [0,1])){
             throw new AuthException('已提交过申请');
+        }elseif($userMer){
+            $caData = array_merge($data["idCardImages"], [$data["images"][0]]);
+            app()->make(UserCaRepository::class)->merSave($data['uid'], $caData);
+            app()->make(UserRepository::class)->save(["uid"=>$data['uid']], ["mer_ca" =>0]);
+            return app('json')->success('提交成功');;
         }
 
 

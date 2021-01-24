@@ -278,6 +278,7 @@ class Product extends BaseController
         [$page, $limit] = $this->getPage();
         $where = $this->request->params(['keyword', 'cate_id', 'order']);
         $merid = $this->request->merchantId();
+        $where['is_trade'] = 0;
         if(!$merid)
             throw new AuthException('不是商户');
 
