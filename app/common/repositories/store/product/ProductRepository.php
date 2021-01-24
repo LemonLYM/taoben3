@@ -845,8 +845,14 @@ class ProductRepository extends BaseRepository
         //分类
         if(isset($where['cate_id'])){
             $productIds = ProductCate::where(['mer_cate_id' => $where['cate_id']])->column('product_id');
-            $productIds && $where['product_id'] = $productIds;
-            unset($where['cate_id']);
+            if(count($productIds)>0){
+                $productIds && $where['product_id'] = $productIds;
+                unset($where['cate_id']);
+            }else{
+                $count = 0;
+                $list = [];
+                return compact('count', 'list');
+            }
         }
 
         //搜索记录
