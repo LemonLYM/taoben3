@@ -115,13 +115,22 @@ class ProductDao extends BaseDao
                 $query->where('is_trader',$where['is_trader']);
             });
         }
+        if(isset($where['is_trade']) && $where['is_trade'] !== ''){
+            $query->where('is_trade',$where['is_trade']);
+        }
+        if(isset($where['product_id']) && !empty($where['product_id'])){
+            if(count($where['product_id']) > 1){
+                $query->whereIn('product_id',$where['product_id']);
+            }else{
+                $query->where('product_id',$where['product_id'][0]);
+            }
+        }
         $query->withSearch($keyArray, $whereArr);
         $query->when(($merId !== null), function ($query) use ($merId) {
             $query->where('mer_id', $merId);
         });
         isset($where['province']) && !empty($where['province']) && $query->where('province', $where['province']);
         isset($where['city']) && !empty($where['city']) && $query->where('city', $where['city']);
-
         $query->when(isset($where['hot_type']) && $where['hot_type'] !== '', function ($query) use ($where) {
             if ($where['hot_type'] == 'new')
                 $query->where('is_new', 1);
@@ -136,7 +145,7 @@ class ProductDao extends BaseDao
             $ids = array_column($children, 'store_category_id');
             if (count($ids)) $query->whereIn('cate_id', $ids);
         });
-      
+
         $query->when(isset($where['order']),function($query)use($where,$merId){
             $query->when(in_array($where['order'], ['is_new', 'price_asc', 'price_desc', 'rate', 'sales']), function ($query) use ($where) {
                 if ($where['order'] == 'price_asc') {
@@ -357,6 +366,7 @@ class ProductDao extends BaseDao
             'product_type'  => 0,
             'mer_status'    => 1,
             'is_gift_bag'   => 0,
+            'is_trade'      => 0,
         ];
     }
 
