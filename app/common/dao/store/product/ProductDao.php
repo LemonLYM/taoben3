@@ -357,6 +357,7 @@ class ProductDao extends BaseDao
             'product_type'  => 0,
             'mer_status'    => 1,
             'is_gift_bag'   => 0,
+            'is_trade'      => 0,
         ];
     }
 

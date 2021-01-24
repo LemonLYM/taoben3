@@ -9,6 +9,7 @@ namespace app\common\repositories\store\product;
 
 use app\common\model\store\order\StoreOrder;
 use app\common\model\store\product\Product;
+use app\common\model\store\product\ProductCate;
 use app\common\model\store\product\ProductContent;
 use app\common\model\user\User;
 use app\common\repositories\store\coupon\StoreCouponRepository;
@@ -642,28 +643,31 @@ class ProductRepository extends BaseRepository
         if ($merId) $stock = merchantConfig($merId, 'mer_store_stock');
         switch ($type) {
             case 1:
-                $where = ['is_show' => 1, 'status' => 1,];
+                $where = ['is_show' => 1, 'status' => 1,"is_trade" => 0];
                 break;
             case 2:
-                $where = ['is_show' => 0, 'status' => 1];
+                $where = ['is_show' => 0, 'status' => 1,"is_trade" => 0];
                 break;
             case 3:
-                $where = ['is_show' => 1, 'stock' => 0, 'status' => 1];
+                $where = ['is_show' => 1, 'stock' => 0, 'status' => 1,"is_trade" => 0];
                 break;
             case 4:
-                $where = ['stock' => $stock ? $stock : 0, 'status' => 1];
+                $where = ['stock' => $stock ? $stock : 0, 'status' => 1,"is_trade" => 0];
                 break;
             case 5:
-                $where = ['soft' => true];
+                $where = ['soft' => true,"is_trade" => 0];
                 break;
             case 6:
-                $where = ['status' => 0];
+                $where = ['status' => 0,"is_trade" => 0];
                 break;
             case 7:
-                $where = ['status' => -1];
+                $where = ['status' => -1,"is_trade" => 0];
+                break;
+            case 8:
+                $where = ["is_trade" => 1];
                 break;
             default:
-                $where = ['is_show' => 1, 'status' => 1];
+                $where = ['is_show' => 1, 'status' => 1,"is_trade" => 0];
                 break;
         }
         if ($productType == 0) {
@@ -724,6 +728,11 @@ class ProductRepository extends BaseRepository
             'type' => 7,
             'name' => '审核未通过' . $name,
             'count' => $this->dao->search($merId, $this->switchType(7, $merId, $productType))->count()
+        ];
+        $result[] = [
+            'type' => 8,
+            'name' => '以旧换新' . $name,
+            'count' => $this->dao->search($merId, $this->switchType(8, $merId, $productType))->count()
         ];
         return $result;
     }
@@ -831,6 +840,13 @@ class ProductRepository extends BaseRepository
         if(!$all){
             // 只显示正常售卖的.
             $where = array_merge($where, $this->dao->productShow());
+        }
+
+        //分类
+        if(isset($where['cate_id'])){
+            $productIds = ProductCate::where(['cate_id' => $where['cate_id']])->column('product_id');
+            $where['product_id'] = ["in" => $productIds];
+            unset($where['cate_id']);
         }
 
         //搜索记录
