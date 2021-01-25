@@ -110,14 +110,14 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="商品详情图" min-width="80">
+        <el-table-column label="商品详情图" min-width="20">
           <template slot-scope="scope">
             <div class="demo-image__preview">
               <el-image
                 v-for="(item, index) in slider_image" :key="index"
                 style="width: 36px; height: 36px"
-                :src="item[index]"
-                :preview-src-list="item[index]"
+                :src="item"
+                :preview-src-list="item"
               />
             </div>
           </template>
