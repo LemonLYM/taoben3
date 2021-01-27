@@ -51,6 +51,7 @@ class MerchantIntention extends BaseController
             $caData = array_merge($data["idCardImages"], [$data["images"][0]]);
             app()->make(UserCaRepository::class)->merSave($data['uid'], $caData);
             app()->make(UserRepository::class)->save(["uid"=>$data['uid']], ["mer_ca" =>0]);
+            $this->repository->save(["uid" => $data['uid']], array_merge(['status' => 0], $data));
             return app('json')->success('提交成功');;
         }
 
